@@ -5,6 +5,7 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
+import com.rescripter.syntax.ChangeText;
 import com.rescripter.syntax.JavaSyntax;
 
 public class ScriptRunner {
@@ -32,6 +33,7 @@ public class ScriptRunner {
         runner.putProperty("Java", new JavaSyntax());
         runner.putProperty("Alert", alerter);
         runner.putProperty("Find", new Find());
+        runner.putProperty("ChangeText", new ChangeText());
         return runner;
     }
 }

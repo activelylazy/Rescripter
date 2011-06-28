@@ -27,7 +27,7 @@ public class RSMethod {
     }
     
     public void setName(String newName) throws JavaModelException {
-        new ChangeText().in(method.getCompilationUnit(), method.getNameRange().getOffset(), method.getNameRange().getLength(), newName);
+        new ChangeText().inCompilationUnit(method.getCompilationUnit(), method.getNameRange().getOffset(), method.getNameRange().getLength(), newName);
     }
     
     public RSMethodReference[] findReferences() throws CoreException {

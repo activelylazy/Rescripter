@@ -21,6 +21,6 @@ public class RSMethodReference {
 
         SourceRange range = new ASTTokenFinder().findTokenOfType(theCU, match.getOffset(), match.getLength(), ITerminalSymbols.TokenNameEOF);
 
-        new ChangeText().in(theCU, range.getOffset(), range.getLength(), newName);
+        new ChangeText().inCompilationUnit(theCU, range.getOffset(), range.getLength(), newName);
     }
 }

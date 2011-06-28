@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.search.IJavaSearchConstants;
 import org.eclipse.jdt.core.search.IJavaSearchScope;
@@ -39,5 +40,29 @@ public class Find {
         }
 
         return (IType) matches.get(0).getElement();
+    }
+    
+    public SearchMatch[] referencesTo(IJavaElement element) throws CoreException {
+        final List<SearchMatch> references = new ArrayList<SearchMatch>();
+        
+        SearchPattern pattern = SearchPattern.createPattern(element, IJavaSearchConstants.REFERENCES);
+        if (pattern == null) {
+            // E.g. element not found / no longer exists
+            throw new NullPointerException("No pattern!?");
+        }
+        
+        SearchRequestor requestor = new SearchRequestor() {
+            @Override public void acceptSearchMatch(SearchMatch match) throws CoreException {
+                references.add(match);
+            }
+        };
+        
+        new SearchEngine().search(pattern,
+                                  new SearchParticipant[] { SearchEngine.getDefaultSearchParticipant() },
+                                  SearchEngine.createWorkspaceScope(),
+                                  requestor,
+                                  null);
+        
+        return references.toArray(new SearchMatch[]{});
     }
 }

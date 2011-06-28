@@ -8,7 +8,7 @@ import org.eclipse.jdt.internal.core.DefaultWorkingCopyOwner;
 
 public class ChangeText {
 
-    public void in(ICompilationUnit compilationUnit, int position, int length, String newText) throws JavaModelException {
+    public void inCompilationUnit(ICompilationUnit compilationUnit, int position, int length, String newText) throws JavaModelException {
         try {
             WorkingCopyOwner owner = DefaultWorkingCopyOwner.PRIMARY;
             ICompilationUnit workingCopy = compilationUnit.getWorkingCopy(owner, null);
