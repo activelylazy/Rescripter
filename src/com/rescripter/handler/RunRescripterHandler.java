@@ -9,6 +9,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.handlers.HandlerUtil;
 
+import com.rescripter.script.Alerter;
 import com.rescripter.script.ScriptRunner;
 
 public class RunRescripterHandler extends AbstractHandler {
@@ -16,15 +17,21 @@ public class RunRescripterHandler extends AbstractHandler {
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
-		
-		TextEditor editor = (TextEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-		
-		IDocument document = editor.getDocumentProvider().getDocument(editor.getEditorInput());
-		
-		ScriptRunner runner = ScriptRunner.createJavaSyntaxScriptRunner(window);
-		runner.run(document.get(), editor.getTitle());
-		
-		return null;
+		try {
+			
+			TextEditor editor = (TextEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+			
+			IDocument document = editor.getDocumentProvider().getDocument(editor.getEditorInput());
+			
+			ScriptRunner runner = ScriptRunner.createJavaSyntaxScriptRunner(window);
+			runner.run(document.get(), editor.getTitle());
+			
+			return null;
+		} catch (Throwable t) {
+			t.printStackTrace();
+			new Alerter(window).error("Error running script: "+t.getMessage());
+			return null;
+		}
 	}
 
 }

@@ -14,8 +14,15 @@ public class Alerter {
     public void info(String message) {
         MessageDialog.openInformation(
                 window.getShell(),
-                "EditorTest",
+                "Rescripter",
                 message);
+    }
+    
+    public void error(String message) {
+    	MessageDialog.openError(
+    			window.getShell(),
+    			"Rescripter Error",
+    			message);
     }
 
 }
