@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="Rescripter Editor"
+            extensions="rs"
+            icon="icons/sample.gif"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            class="com.rescripter.RescripterEditor"
+            id="com.rescripter.TestEditor">
+      </editor>
+   </extension>
+   
+    <extension point="org.eclipse.core.expressions.definitions">
+       <definition id="com.rescripter.rsExtension">
+          <adapt type="org.eclipse.core.resources.IResource">
+             <test property="org.eclipse.core.resources.extension"
+                   value="rs">
+             </test>
+          </adapt>
+       </definition>
+    </extension>   
+   
+    <extension id="add.item" point="org.eclipse.ui.menus">
+      <menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+         <menu
+               id="Rescripter.menus.rescripterMenu"
+               label="Rescripter"
+               mnemonic="C">
+            <command
+                  commandId="Rescripter.commands.runScriptCommand"
+                  id="Rescripter.menus.runScriptCommand"
+                  mnemonic="S">
+            </command>
+            <visibleWhen checkEnabled="false">
+               <or>
+                  <with variable="selection">
+                     <iterate ifEmpty="false">
+                       <reference definitionId="com.rescripter.rsExtension"/>
+                     </iterate>
+                  </with>
+                  <with variable="activeEditorInput">
+                    <reference definitionId="com.rescripter.rsExtension"/>
+                  </with>
+               </or>
+            </visibleWhen>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
+         <toolbar
+               id="EditorTest.toolbars.runVSToolbar">
+            <command
+                  commandId="Rescripter.commands.runScriptCommand"
+                  icon="icons/sample.gif"
+                  id="Rescripter.toolbars.runScriptCommand"
+                  tooltip="Run rescripter">
+                <visibleWhen checkEnabled="false">
+                   <or>
+                      <with variable="selection">
+                         <iterate ifEmpty="false">
+                           <reference definitionId="com.rescripter.rsExtension"/>
+                         </iterate>
+                      </with>
+                      <with variable="activeEditorInput">
+                        <reference definitionId="com.rescripter.rsExtension"/>
+                      </with>
+                   </or>
+                </visibleWhen>
+            </command>
+         </toolbar>
+      </menuContribution>
+   </extension>
+    <extension
+          point="org.eclipse.ui.commands">
+       <category
+             id="Rescripter.commands.category"
+             name="Resctiper Category">
+       </category>
+       <command
+             categoryId="Rescripter.commands.category"
+             id="Rescripter.commands.runScriptCommand"
+             name="Run Rescripter">
+       </command>
+    </extension>
+    <extension
+          point="org.eclipse.ui.handlers">
+       <handler
+             class="com.rescripter.handler.RunRescripterHandler"
+             commandId="Rescripter.commands.runScriptCommand">
+       </handler>
+    </extension>
+    <extension
+          point="org.eclipse.ui.bindings">
+       <key
+             commandId="Rescripter.commands.runScriptCommand"
+             contextId="org.eclipse.ui.contexts.window"
+             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+             sequence="M1+R S">
+       </key>
+    </extension>
+    
+       
+</plugin>
