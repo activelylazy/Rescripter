@@ -31,6 +31,7 @@ public class ScriptRunner {
         ScriptRunner runner = new ScriptRunner();
         runner.putProperty("Java", new JavaSyntax());
         runner.putProperty("Alert", alerter);
+        runner.putProperty("Find", new Find());
         return runner;
     }
 }
