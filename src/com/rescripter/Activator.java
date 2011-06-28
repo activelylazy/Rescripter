@@ -1,4 +1,4 @@
-package editortest;
+package com.rescripter;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
