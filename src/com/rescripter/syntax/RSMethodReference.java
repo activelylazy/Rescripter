@@ -5,7 +5,6 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.SourceRange;
-import org.eclipse.jdt.core.compiler.ITerminalSymbols;
 import org.eclipse.jdt.core.search.MethodReferenceMatch;
 
 public class RSMethodReference {
@@ -19,7 +18,7 @@ public class RSMethodReference {
     public void setMethodName(String newName) throws JavaModelException {
         ICompilationUnit theCU = (ICompilationUnit) JavaCore.create((IFile) match.getResource());
 
-        SourceRange range = new ASTTokenFinder().findTokenOfType(theCU, match.getOffset(), match.getLength(), ITerminalSymbols.TokenNameEOF);
+        SourceRange range = new ASTTokenFinder().findIdentifier(theCU, match.getOffset(), match.getLength());
 
         new ChangeText().inCompilationUnit(theCU, range.getOffset(), range.getLength(), newName);
     }

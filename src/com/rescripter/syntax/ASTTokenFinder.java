@@ -10,13 +10,13 @@ import org.eclipse.jdt.core.compiler.InvalidInputException;
 
 public class ASTTokenFinder {
 
-    public SourceRange findTokenOfType(ICompilationUnit theCU, int offset, int length, int tokenType) throws JavaModelException {
+    public SourceRange findIdentifier(ICompilationUnit theCU, int offset, int length) throws JavaModelException {
         IScanner scanner = ToolFactory.createScanner(false, false, false, false);
         scanner.setSource(theCU.getSource().toCharArray());
         scanner.resetTo(offset, offset + length);
         int token;
         try {
-            while ((token = scanner.getNextToken()) != tokenType) {
+            while ((token = scanner.getNextToken()) != ITerminalSymbols.TokenNameEOF) {
                 switch(token) {
                 case ITerminalSymbols.TokenNameIdentifier:
                     return new SourceRange(scanner.getCurrentTokenStartPosition(), 
@@ -30,5 +30,4 @@ public class ASTTokenFinder {
         return null;
     }
     
-
 }

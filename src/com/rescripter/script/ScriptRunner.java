@@ -5,6 +5,7 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
+import com.rescripter.syntax.ASTTokenFinder;
 import com.rescripter.syntax.ChangeText;
 import com.rescripter.syntax.JavaSyntax;
 
@@ -34,6 +35,7 @@ public class ScriptRunner {
         runner.putProperty("Alert", alerter);
         runner.putProperty("Find", new Find());
         runner.putProperty("ChangeText", new ChangeText());
+        runner.putProperty("ASTTokenFinder", new ASTTokenFinder());
         return runner;
     }
 }
