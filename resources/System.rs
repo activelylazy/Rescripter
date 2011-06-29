@@ -8,6 +8,10 @@ function findMethodByName(type, methodName) {
 }
 
 function replaceConstructorCall(constructor, newMethodName, useStaticImport) {
+	var newMethod = constructor.getDeclaringType().getMethod(newMethodName, constructor.getParameterTypes());
+	if (newMethod.getSignature() == undefined) {
+		Alert.error("Failed to find "+constructor.getDeclaringType().getFullyQualifiedName()+"."+newMethodName);
+	}
 	var references = Find.referencesTo(constructor);
 	
 	for(var i=0; i<references.length; i++) {
@@ -22,8 +26,10 @@ function replaceConstructorCall(constructor, newMethodName, useStaticImport) {
 	        ChangeText.inCompilationUnit(references[i].getElement().getCompilationUnit(),
 	                                     startOfNew, endOfCons-startOfNew,
 	                                     newMethodName);
-	    	addImport(references[i].getElement().getCompilationUnit(),
-	    			  "import static "+constructor.getDeclaringType().getFullyQualifiedName()+"."+newMethodName+";");
+        	references[i].getElement().getCompilationUnit().createImport(
+        			constructor.getDeclaringType().getFullyQualifiedName()+"."+newMethodName,
+        			null, org.eclipse.jdt.core.Flags.AccStatic, null);
+        	references[i].getElement().getCompilationUnit().commitWorkingCopy(true, null);
         } else {
 	        ChangeText.inCompilationUnit(references[i].getElement().getCompilationUnit(),
 	                                     startOfNew, endOfCons-startOfNew,
