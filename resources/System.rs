@@ -37,20 +37,3 @@ function replaceConstructorCall(constructor, newMethodName, useStaticImport) {
         }
 	}
 }
-
-function addImport(compilationUnit, importText) {
-	var imports = compilationUnit.getImports();
-	var lastImport = 0;
-	for(var i=0; i<imports.length; i++) {
-		var pos = imports[i].getSourceRange().getOffset() + imports[i].getSourceRange().getLength();
-		if (pos > lastImport) {
-			lastImport = pos;
-		}
-	}
-	if (lastImport == 0) {
-		lastImport = compilationUnit.getPackageDeclarations()[0].getSourceRange().getOffset() +
-					 compilationUnit.getPackageDeclarations()[0].getSourceRange().getLength();
-	}
-	ChangeText.inCompilationUnit(compilationUnit, lastImport, 0,
-								 "\r\n"+importText);
-}
