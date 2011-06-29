@@ -22,3 +22,25 @@ function replaceConstructorCall(constructor, newMethodName) {
                                      constructor.getDeclaringType().getElementName()+"."+newMethodName);
 	}
 }
+
+function replaceConstructorCallWithStaticallyImportedCall(constructor, newMethodName) {
+    var references = Find.referencesTo(constructor);
+    
+    for(var i=0; i<references.length; i++) {
+        var startOfNew = references[i].offset;
+        var endOfCons = ASTTokenFinder.findTokenOfType(references[i].getElement().getCompilationUnit(),
+                                                        org.eclipse.jdt.core.compiler.ITerminalSymbols.TokenNameLPAREN,
+                                                        references[i].getOffset(),
+                                                        references[i].getLength())
+                            .getOffset();
+        
+        var lastImport = getLastImportPosition(references[i].getElement().getCompilationUnit());
+        ChangeText.inCompilationUnit(references[i].getElement().getCompilationUnit(),
+                                     startOfNew, endOfCons-startOfNew,
+                                     newMethodName);
+
+        ChangeText.inCompilationUnit(references[i].getElement().getCompilationUnit(),
+                                     lastImport, 0,
+                                     "\nimport static "+constructor.getDeclaringType().getFullyQualifiedName()+"."+newMethodName+";");
+    }
+}
