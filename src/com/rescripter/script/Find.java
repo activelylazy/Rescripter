@@ -36,7 +36,7 @@ public class Find {
         searchEngine.search(pattern, new SearchParticipant[] {SearchEngine.getDefaultSearchParticipant()}, scope, requestor, null);
 
         if (matches.size() != 1) {
-            throw new IllegalArgumentException("Failed to find unique type");
+            throw new IllegalArgumentException("Failed to find unique type; found "+matches.size());
         }
 
         return (IType) matches.get(0).getElement();
