@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: EditorTest
-Bundle-SymbolicName: Rescripter;singleton:=true
+Bundle-Name: RescripterEditor
+Bundle-SymbolicName: com.rescripter.editor;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: com.rescripter.Activator
 Require-Bundle: org.eclipse.ui,
