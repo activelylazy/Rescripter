@@ -11,14 +11,17 @@ import org.eclipse.jdt.core.compiler.InvalidInputException;
 public class ASTTokenFinder {
 
     public SourceRange findIdentifier(ICompilationUnit theCU, int offset, int length) throws JavaModelException {
+        return findTokenOfType(theCU, ITerminalSymbols.TokenNameIdentifier, offset, length);
+    }
+    
+    public SourceRange findTokenOfType(ICompilationUnit theCU, int tokenType, int offset, int length) throws JavaModelException {
         IScanner scanner = ToolFactory.createScanner(false, false, false, false);
         scanner.setSource(theCU.getSource().toCharArray());
         scanner.resetTo(offset, offset + length);
         int token;
         try {
             while ((token = scanner.getNextToken()) != ITerminalSymbols.TokenNameEOF) {
-                switch(token) {
-                case ITerminalSymbols.TokenNameIdentifier:
+                if (token == tokenType) {
                     return new SourceRange(scanner.getCurrentTokenStartPosition(), 
                                            scanner.getCurrentTokenEndPosition() + 1 - scanner.getCurrentTokenStartPosition());
                 }
@@ -28,6 +31,24 @@ public class ASTTokenFinder {
         }
         
         return null;
+    }
+    
+    public static interface FoundToken {
+        void found(int tokenType, int offset, int length);
+    }
+    
+    public void scanTokens(ICompilationUnit theCU, int offset, int length, FoundToken callback) throws JavaModelException {
+        IScanner scanner = ToolFactory.createScanner(false, false, false, false);
+        scanner.setSource(theCU.getSource().toCharArray());
+        scanner.resetTo(offset, offset + length);
+        int token;
+        try {
+            while ((token = scanner.getNextToken()) != ITerminalSymbols.TokenNameEOF) {
+                callback.found(token, scanner.getCurrentTokenStartPosition(), scanner.getCurrentTokenEndPosition() + 1 - scanner.getCurrentTokenStartPosition());
+            }
+        } catch (InvalidInputException e) {
+            throw new RuntimeException("Error finding token: "+e.getMessage(), e);
+        }
     }
     
 }

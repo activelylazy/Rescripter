@@ -12,11 +12,13 @@ function replaceConstructorCall(constructor, newMethodName) {
 	
 	for(var i=0; i<references.length; i++) {
 		var startOfNew = references[i].offset;
-		var methodRange = ASTTokenFinder.findIdentifier(references[i].getElement().getCompilationUnit(),
-														references[i].getOffset(),
-														references[i].getLength());
-		ChangeText.inCompilationUnit(references[i].getElement().getCompilationUnit(),
-									 startOfNew, methodRange.getOffset()+methodRange.getLength()-startOfNew,
-									 constructor.getDeclaringType().getElementName()+"."+newMethodName);
+        var endOfCons = ASTTokenFinder.findTokenOfType(references[i].getElement().getCompilationUnit(),
+                                                        org.eclipse.jdt.core.compiler.ITerminalSymbols.TokenNameLPAREN,
+                                                        references[i].getOffset(),
+                                                        references[i].getLength())
+                            .getOffset();
+        ChangeText.inCompilationUnit(references[i].getElement().getCompilationUnit(),
+                                     startOfNew, endOfCons-startOfNew,
+                                     constructor.getDeclaringType().getElementName()+"."+newMethodName);
 	}
 }

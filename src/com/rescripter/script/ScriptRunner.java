@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 
+import org.eclipse.jdt.core.compiler.ITerminalSymbols;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
