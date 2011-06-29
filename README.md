@@ -20,7 +20,7 @@ Create a new update site with the URL:
 Say you want to replace a constructor call
 
 ```
-new MyNumber("123")
+MyNumber someNumber = MyNumber("123")
 ```
 
 With a call to a static factory method, that is imported for brevity
@@ -28,7 +28,7 @@ With a call to a static factory method, that is imported for brevity
 ```
 import static com.example.MyNumber.valueOf;
 ...
-valueOf("123");
+MyNumber someNumber = valueOf("123");
 ```
 
 Then you can do this by running the following .rs script:
