@@ -23,7 +23,8 @@ With a call to a static factory method, that is imported for brevity
     ...
     valueOf("123");
 Then you can do this by running the following .rs script:
-```var myNumber = Find.typeByName("MyNumber");
-    var cons = findMethodByName(myNumber, "MyNumber");
-    replaceConstructorCall(cons, "valueOf", true);
+```
+var myNumber = Find.typeByName("MyNumber");
+var cons = findMethodByName(myNumber, "MyNumber");
+replaceConstructorCall(cons, "valueOf", true);
 ```
