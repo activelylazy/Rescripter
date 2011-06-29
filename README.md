@@ -20,10 +20,10 @@ Create a new update site with the URL:
 Say you want to replace a constructor call
 
 ```
-MyNumber someNumber = MyNumber("123")
+MyNumber someNumber = new MyNumber("123")
 ```
 
-With a call to a static factory method, that is imported for brevity
+With a call to a static factory method
 
 ```
 import static com.example.MyNumber.valueOf;
