@@ -18,15 +18,19 @@ Create a new update site with the URL:
 # An Example Would Help
 
 Say you want to replace a constructor call
+
 ```
 new MyNumber("123")
 ```
+
 With a call to a static factory method, that is imported for brevity
+
 ```
 import static com.example.MyNumber.valueOf;
 ...
 valueOf("123");
 ```
+
 Then you can do this by running the following .rs script:
 
 ```
