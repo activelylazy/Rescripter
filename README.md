@@ -39,3 +39,7 @@ var cons = findMethodByName(myNumber, "MyNumber");
 replaceConstructorCall(cons, "valueOf", true);
 ```
 
+# Getting Started
+
+After installing the plugin, create a new blank file with the extension .rs. To run your script, press Ctrl-R S.
+
