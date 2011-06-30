@@ -25,10 +25,25 @@ function moveMethodBetweenInjectables() {
 	for(var i=0; i<references.length; i++) {
 		var refType = references[i].getElement().getDeclaringType();
 		if (!typeDefinesFieldOfType(refType, targetService)) {
-			//addField(refType, targetService);
-			Alert.info("No field of type "+targetService.getElementName()+" in "+refType.getElementName());
+			addField(refType, targetService);
+			addImport(refType.getCompilationUnit(), targetService);
+			refType.getCompilationUnit().commitWorkingCopy(true, null);
 		}
 	}
+}
+
+function addImport(compilationUnit, importType) {
+	compilationUnit.createImport(importType.getFullyQualifiedName(), 
+		null, org.eclipse.jdt.core.Flags.AccDefault, null);
+}
+
+function addField(container, fieldType) {
+	var decl = "private "+fieldType.getElementName()+" "+initLowerCase(fieldType.getElementName())+";";
+	container.createField(decl,null, false, null);
+}
+
+function initLowerCase(value) {
+	return value.substring(0,1).toLowerCase() + value.substring(1);
 }
 
 function typeDefinesFieldOfType(container, fieldType) {

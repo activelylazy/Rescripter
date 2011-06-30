@@ -1,5 +1,6 @@
-package com.example.service;
+package com.example.service.client;
 
+import com.example.service.GodClass;
 import com.google.inject.Inject;
 
 public class SomeClient {
