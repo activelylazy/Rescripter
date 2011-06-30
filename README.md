@@ -41,4 +41,5 @@ replaceConstructorCall(cons, "valueOf", true);
 
 # Getting Started
 
-To get started with Rescripter, see the [tutorial](https://github.com/activelylazy/Rescripter/raw/master/documentation/tutorial.html).
+After installing the plugin, create a new blank file with the extension .rs. To run your script, press Ctrl-R S.
+
