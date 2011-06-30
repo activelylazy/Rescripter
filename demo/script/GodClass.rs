@@ -33,6 +33,8 @@ function moveMethodBetweenInjectables() {
 	}
 	
 	methodToMove.move(targetService, null, null, false, null);
+	sourceService.getCompilationUnit().commitWorkingCopy(true, null);
+	targetService.getCompilationUnit().commitWorkingCopy(true, null);
 }
 
 var lastIdentifierOffset;
