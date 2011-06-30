@@ -1,8 +1,8 @@
 package com.example.rename;
 
-public class SomeClass {
+public class Person {
 
-    public SomeClass() {
+    public Person() {
         
     }
     
@@ -11,8 +11,8 @@ public class SomeClass {
     }
     
     public static void main(String[] args) {
-        SomeClass someClass = new SomeClass();
+        Person person = new Person();
         
-        System.out.println("The name is "+someClass.getName());
+        System.out.println("The name is "+person.getName());
     }
 }
