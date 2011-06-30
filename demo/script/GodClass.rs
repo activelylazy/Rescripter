@@ -31,11 +31,10 @@ function moveMethodBetweenInjectables() {
 			refType.getCompilationUnit().commitWorkingCopy(true, null);
 		}
 	}
+	
+	methodToMove.move(targetService, null, null, false, null);
 }
 
-function debugElement(element) {
-	Alert.info("Have: "+element.getCompilationUnit().getSource().substring(element.getOffset(), reference.getOffset()+reference.getLength()));
-}
 var lastIdentifierOffset;
 var lastIdentifierLength;
 var found = false;
