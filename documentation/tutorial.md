@@ -52,34 +52,37 @@ Alert.info(findMethodByName(type, "getName").getElementName());
 Both of these approaches return an [org.eclipse.jdt.core.IMethod](http://help.eclipse.org/helios/topic/org.eclipse.jdt.doc.isv/reference/api/org/eclipse/jdt/core/IMethod.html).
 
 ## Finding References
-Given a method, the next most interesting thing to do is find all the places its referenced from.
+Given a method, the next most thing we might want to do is find all the places its referenced from.
 
 ```java
 var type = Find.typeByName("Person");
 var method = type.getMethod("getName",[]);
 var references = Find.referencesTo(method);
-Alert.info("There are "+references.length+" references to getName(); the first is in "+references[0].getElement().getElementName());
+Alert.info("There are " + references.length + " references to getName(); the first is in " +
+	references[0].getElement().getElementName());
 ```
 
 This tells us that there is just 1 reference - in the main method. Find.referencesTo returns an array of [org.eclipse.jdt.core.search.SearchMatch](http://help.eclipse.org/helios/topic/org.eclipse.jdt.doc.isv/reference/api/org/eclipse/jdt/core/search/SearchMatch.html).
 
 ## Scanning the AST
-The various elements provide a fine-grained view of the source code - but it doesn't always provide enough detail. However, it is possible to use Eclipse's AST scanner to further parse the source - the ASTTokenFinder provides an interface to this.
+Although IType, IMethod and SearchMatch provide the locations of some key parts of the source tree, sometimes we need a more fine-grained view of the source code. 
+
+For example, when we have a search match identifying a method call, we get the whole method invocation - both the method name and the parameter list. I.e. the part of the line:
+    System.out.println("The name is "+person.```getName()```);
+
+If we, say, wanted to rename the method, we need to use the syntax tree to identify just the method name. Eclipse lets you analyse the syntax tree, but to make this easier Rescripter provides the ASTTokenFinder.
 
 ```java
 var type = Find.typeByName("Person");
 var method = type.getMethod("getName",[]);
 var references = Find.referencesTo(method);
 Alert.info(ASTTokenFinder.findTokenOfType(type.getCompilationUnit(), 
-					  org.eclipse.jdt.core.compiler.ITerminalSymbols.TokenNameLPAREN, 
-                                	  references[0].getOffset(),
-					  references[0].getLength()));
+                                          org.eclipse.jdt.core.compiler.ITerminalSymbols.TokenNameLPAREN, 
+                                          references[0].getOffset(),
+                                          references[0].getLength()));
 ```
 
-This searches for references to the Person.getName(). We then build an AST and scan the section covered by the reference (i.e. the part of the line:
-System.out.println("The name is "+person.```getName()```);
-
-Within that section we then find the first '(' symbol. We now have the location within the source file of the "getName" reference, leaving the field and parameters out.
+This searches for references to the Person.getName() method. We then build an AST and scan the section covered by the method reference to identify the first '(' - this gives us the range of the source identifying just the method name.
 
 ## Making Changes
 Through Eclipse's plugin environment we have access to various tools that can make changes to code. However, to simplify
