@@ -54,14 +54,18 @@ function addInjectableToConstructors(constructors, paramType, paramName) {
 	for(var i=0; i<constructors.length; i++) {
 		// Only amend @Inject constructors, we cannot know what to do with others
 		if (isInjectable(constructors[i])) {
-		    var endParamList =  ASTTokenFinder.findTokenOfType(constructors[i].getDeclaringType().getCompilationUnit(),
-		                                                       org.eclipse.jdt.core.compiler.ITerminalSymbols.TokenNameRPAREN,
-		                                                       constructors[i].getSourceRange().getOffset(),
-		                                                       constructors[i].getSourceRange().getLength());
-			ChangeText.inCompilationUnit(constructors[i].getDeclaringType().getCompilationUnit(),
-										 endParamList.getOffset(), 0, ", "+paramType.getElementName()+" "+paramName);		                                                       
+			addParameterToMethod(constructors[i], paramType, paramName);
 		}
 	}
+}
+
+function addParameterToMethod(method, paramType, paramName) {
+    var endParamList =  ASTTokenFinder.findTokenOfType(method.getDeclaringType().getCompilationUnit(),
+                                                       org.eclipse.jdt.core.compiler.ITerminalSymbols.TokenNameRPAREN,
+                                                       method.getSourceRange().getOffset(),
+                                                       method.getSourceRange().getLength());
+	ChangeText.inCompilationUnit(method.getDeclaringType().getCompilationUnit(),
+								 endParamList.getOffset(), 0, ", "+paramType.getElementName()+" "+paramName);		                                                       
 }
 
 var lastIdentifierOffset;
