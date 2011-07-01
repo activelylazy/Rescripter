@@ -7,7 +7,7 @@ Create a new file with the extension .rs. The Rescripter editor lets you enter a
 
 Simply enter the script you require; then to run it press Ctrl-R S.
 
-All the below examples are in the demo project, pull Rescripter and import demo as a project into Eclipse.
+All the below examples are in the demo project, git pull Rescripter using the URL above and import demo as a project into Eclipse.
 
 ## Hello World
 To display messages in your script - e.g. success when you're done (or for primitive debugging).

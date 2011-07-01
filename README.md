@@ -43,3 +43,6 @@ replaceConstructorCall(cons, "valueOf", true);
 
 For more details and examples follow the [tutorial](https://github.com/activelylazy/Rescripter/blob/master/documentation/tutorial.md)
 
+# Help & Support
+
+If you have any questions / comments / feedback email me dave@activelylazy.co.uk
