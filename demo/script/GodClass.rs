@@ -61,27 +61,25 @@ function addInjectableToConstructors(constructors, paramType, paramName) {
 }
 
 function assignParameterToField(method, paramType, paramName, fieldName) {
+	var cu = method.getDeclaringType().getCompilationUnit();
+	var formatter = org.eclipse.jdt.core.ToolFactory.createCodeFormatter(null);
+	var range = method.getSourceRange();
 	ChangeText.inCompilationUnit(method.getDeclaringType().getCompilationUnit(),
 								 method.getSourceRange().getOffset() + method.getSourceRange().getLength() - 1,
 								 0, "this."+fieldName+" = "+paramName+";\n");
+	var indent_edit = formatter.format(org.eclipse.jdt.core.formatter.CodeFormatter.K_COMPILATION_UNIT, 
+    										cu.getSource(), range.getOffset(), range.getLength()+fieldName.length+paramName.length+10, 0, null);
+	cu.applyTextEdit(indent_edit, null);
+	cu.reconcile();								 		                                                       
 }
 
 function addParameterToMethod(method, paramType, paramName) {
-	var cu = method.getDeclaringType().getCompilationUnit();
-	var formatter = org.eclipse.jdt.core.ToolFactory.createCodeFormatter(null);
-	var range = cu.getSourceRange();
-
     var endParamList =  ASTTokenFinder.findTokenOfType(method.getDeclaringType().getCompilationUnit(),
                                                        org.eclipse.jdt.core.compiler.ITerminalSymbols.TokenNameRPAREN,
                                                        method.getSourceRange().getOffset(),
                                                        method.getSourceRange().getLength());
 	ChangeText.inCompilationUnit(method.getDeclaringType().getCompilationUnit(),
 								 endParamList.getOffset(), 0, ", "+paramType.getElementName()+" "+paramName);
-
-	var indent_edit = formatter.format(org.eclipse.jdt.core.formatter.CodeFormatter.K_COMPILATION_UNIT, 
-    										cu.getSource(), range.getOffset(), range.getLength(), 0, null);
-	cu.applyTextEdit(indent_edit, null);
-	cu.reconcile();								 		                                                       
 }
 
 var lastIdentifierOffset;
