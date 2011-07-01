@@ -8,8 +8,4 @@ public class DataService {
 	public DataService() {
 		
 	}
-
-	public void someBusinessLogic() {
-			// business logic here
-		}
 }

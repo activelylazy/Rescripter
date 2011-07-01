@@ -9,6 +9,10 @@ public class GodClass {
 		
 	}
 	
+	public void someBusinessLogic() {
+		// business logic here
+	}
+	
 	public void unrelatedBusinessLogic() {
 		// whatever
 	}
