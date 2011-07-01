@@ -54,9 +54,16 @@ function addInjectableToConstructors(constructors, paramType, paramName) {
 	for(var i=0; i<constructors.length; i++) {
 		// Only amend @Inject constructors, we cannot know what to do with others
 		if (isInjectable(constructors[i])) {
+			assignParameterToField(constructors[i], paramType, paramName, paramName);
 			addParameterToMethod(constructors[i], paramType, paramName);
 		}
 	}
+}
+
+function assignParameterToField(method, paramType, paramName, fieldName) {
+	ChangeText.inCompilationUnit(method.getDeclaringType().getCompilationUnit(),
+								 method.getSourceRange().getOffset() + method.getSourceRange().getLength() - 1,
+								 0, "this."+fieldName+" = "+paramName+";\n");
 }
 
 function addParameterToMethod(method, paramType, paramName) {
