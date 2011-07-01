@@ -8,14 +8,14 @@ Create a new file with the extension .rs. To run the script press Ctrl-R S.
 ## Hello World
 To display messages in your script - e.g. success when you're done (or for primitive debugging).
 
-```Java
+```java
 Alert.info("Hello world");
 ```
 
 ## Finding Types
 To find Java types by name
 
-```Java
+```java
 package com.example.rename;
 
 public class Person {
