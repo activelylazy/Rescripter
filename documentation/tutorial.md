@@ -87,17 +87,15 @@ common cases where we want free-form changes there is a helper method.
 var type = Find.typeByName("Person");
 var method = type.getMethod("getName",[]);
 ChangeText.inCompilationUnit(type.getCompilationUnit(),
-			     method.getSourceRange().getOffset(), 
-			     0,
+                             method.getSourceRange().getOffset(), 
+                             0,
                              "/* This is a comment */\n\t"); 
 ```
 
 This amends the source in Person.java and adds a comment before the getName() method, so we now have:
 
 ```java
-    public Person() {
-        
-    }
+    public Person() { }
     
     /* This is a comment */
     public String getName() {

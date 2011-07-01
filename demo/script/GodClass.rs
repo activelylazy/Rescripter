@@ -1,4 +1,15 @@
 
+function findMethodsByName(type, methodName) {
+	var methods = type.getMethods();
+	var matching = [];
+	for (var i=0; i<methods.length; i++) {
+		if (methods[i].getElementName() == methodName) {
+			matching.push(methods[i]);
+		}
+	}
+	return matching;
+}
+
 function moveMethodBetweenInjectables() {
 	var targetService = Find.typeByName("DataService");
 	var targetServiceConstructor = findMethodByName(targetService, "DataService");
@@ -24,10 +35,12 @@ function moveMethodBetweenInjectables() {
 	var references = Find.referencesTo(methodToMove);
 	for(var i=0; i<references.length; i++) {
 		var refType = references[i].getElement().getDeclaringType();
+		var newFieldName = initLowerCase(targetService.getElementName());
 		if (!typeDefinesFieldOfType(refType, targetService)) {
-			changeReferenceFieldTo(references[i], initLowerCase(targetService.getElementName()));
+			changeReferenceFieldTo(references[i], newFieldName);
 			addField(refType, targetService);
 			addImport(refType.getCompilationUnit(), targetService);
+			addInjectableToConstructors(findMethodsByName(refType, refType.getElementName()), targetService, newFieldName);
 			refType.getCompilationUnit().commitWorkingCopy(true, null);
 		}
 	}
@@ -35,6 +48,20 @@ function moveMethodBetweenInjectables() {
 	methodToMove.move(targetService, null, null, false, null);
 	sourceService.getCompilationUnit().commitWorkingCopy(true, null);
 	targetService.getCompilationUnit().commitWorkingCopy(true, null);
+}
+
+function addInjectableToConstructors(constructors, paramType, paramName) {
+	for(var i=0; i<constructors.length; i++) {
+		// Only amend @Inject constructors, we cannot know what to do with others
+		if (isInjectable(constructors[i])) {
+		    var endParamList =  ASTTokenFinder.findTokenOfType(constructors[i].getDeclaringType().getCompilationUnit(),
+		                                                       org.eclipse.jdt.core.compiler.ITerminalSymbols.TokenNameRPAREN,
+		                                                       constructors[i].getSourceRange().getOffset(),
+		                                                       constructors[i].getSourceRange().getLength());
+			ChangeText.inCompilationUnit(constructors[i].getDeclaringType().getCompilationUnit(),
+										 endParamList.getOffset(), 0, ", "+paramType.getElementName()+" "+paramName);		                                                       
+		}
+	}
 }
 
 var lastIdentifierOffset;
@@ -62,14 +89,6 @@ function changeReferenceFieldTo(reference, newField) {
 	}
 	ChangeText.inCompilationUnit(reference.getElement().getCompilationUnit(),
 									lastIdentifierOffset, lastIdentifierLength, newField);
-/*
-    var fieldRange =  ASTTokenFinder.findTokenOfType(reference.getElement().getCompilationUnit(),
-                                                           org.eclipse.jdt.core.compiler.ITerminalSymbols.TokenNameDOT,
-                                                           reference.getOffset(),
-                                                           reference.getLength());
-	ChangeText.inCompilationUnit(reference.getElement().getCompilationUnit(),
-								 fieldRange.getOffset(), fieldRange.getLenght(), newField);
-*/
 }
 
 function addImport(compilationUnit, importType) {

@@ -7,6 +7,17 @@ function findMethodByName(type, methodName) {
 	}
 }
 
+function findMethodsByName(type, methodName) {
+	var methods = type.getMethods();
+	var matching = [];
+	for (var i=0; i<methods.length; i++) {
+		if (methods[i].getElementName() == methodName) {
+			matching.push(methods[i]);
+		}
+	}
+	return matching;
+}
+
 function replaceConstructorCall(constructor, newMethodName, useStaticImport) {
 	var newMethod = constructor.getDeclaringType().getMethod(newMethodName, constructor.getParameterTypes());
 	if (newMethod.getSignature() == undefined) {
