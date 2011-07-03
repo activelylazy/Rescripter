@@ -45,6 +45,14 @@ function Token(cu, tokenType, offset, length) {
 		return cu.getSource().substring(offset, parseInt(offset)+parseInt(length));
 	};
 	
+	this.getOffset = function() {
+		return offset;
+	};
+	
+	this.getLength = function() {
+		return length;
+	};
+	
 	return this;
 }
 
@@ -57,6 +65,69 @@ var ScanTokens = {
 		return tokens;	
 	}
 };
+
+var Rename = {
+	method: function(method, newName) {
+		return new org.eclipse.text.edits.ReplaceEdit(method.getNameRange().getOffset(), method.getNameRange().getLength(), newName)
+	}
+};
+
+function SourceChange(cu) {
+	this.cu = cu;
+	this.textEdit = new org.eclipse.text.edits.MultiTextEdit();
+	
+	this.apply = function() {
+		this.cu.becomeWorkingCopy(null);
+		this.cu.applyTextEdit(this.textEdit, null);
+		this.cu.commitWorkingCopy(true, null);
+	};
+	
+	this.addEdit = function(textedit) {
+		this.textEdit.addChild(textedit);
+		return this;
+	}
+	
+	this.insert = function(offset, text) {
+        this.addEdit(new org.eclipse.text.edits.InsertEdit(offset, text));
+        return this;
+	}
+	
+	this.replace = function(offset, length, text) {
+		this.addEdit(new org.eclipse.text.edits.ReplaceEdit(offset, length, text));
+		return this;
+	}
+	
+	return this;
+}
+
+function MultiSourceChange() {
+    this.dict = {};
+    
+    this.changeFile = function(file) {
+        if (this.dict[file] == undefined) {
+            this.dict[file] = new SourceChange(file);
+        }
+        return this.dict[file];
+    };
+    
+    this.apply = function() {
+        for(key in this.dict) {
+            this.dict[key].apply();
+        }
+    }
+    
+    return this;
+}
+
+function first(list) {  
+    return list[0];
+}
+
+function foreach(from, fun) {
+    for(var i=0; i<from.length; i++) {
+        fun(from[i]);
+    }
+}
 
 function transform(from, fun) {
 	var results = [];
