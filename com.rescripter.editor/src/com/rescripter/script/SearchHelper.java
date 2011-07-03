@@ -14,9 +14,9 @@ import org.eclipse.jdt.core.search.SearchParticipant;
 import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.core.search.SearchRequestor;
 
-public class Find {
+public class SearchHelper {
 
-    public IType typeByName(String name) throws CoreException {
+    public IType findTypeByName(String name) throws CoreException {
         SearchPattern pattern = SearchPattern.createPattern(name, IJavaSearchConstants.TYPE, IJavaSearchConstants.DECLARATIONS, SearchPattern.R_EXACT_MATCH);
         if (pattern == null) {
             throw new NullPointerException("No pattern!?");
@@ -42,7 +42,7 @@ public class Find {
         return (IType) matches.get(0).getElement();
     }
     
-    public SearchMatch[] referencesTo(IJavaElement element) throws CoreException {
+    public SearchMatch[] findReferencesTo(IJavaElement element) throws CoreException {
         final List<SearchMatch> references = new ArrayList<SearchMatch>();
         
         SearchPattern pattern = SearchPattern.createPattern(element, IJavaSearchConstants.REFERENCES);

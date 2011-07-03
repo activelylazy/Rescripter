@@ -35,7 +35,7 @@ public class ScriptRunner {
         
         ScriptRunner runner = new ScriptRunner();
         runner.putProperty("Alert", alerter);
-        runner.putProperty("Find", new Find());
+        runner.putProperty("SearchHelper", new SearchHelper());
         runner.putProperty("ChangeText", new ChangeText());
         runner.putProperty("ASTTokenFinder", new ASTTokenFinder());
         
