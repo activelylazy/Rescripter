@@ -11,6 +11,6 @@ Alert.info(Find.methodByName(type, "getName").getElementName());
 Alert.info(Find.methodsByName(type, "setAge").length);
 
 /*
- * Now find a method on person by signature
+ * We can also find methods by signature from the type
  */
 Alert.info(type.getMethod("setName",["QString;"]).getElementName());
