@@ -1,12 +1,17 @@
-function findConstructors(type) {
-	return Find.methodsByName(type, type.getElementName());
-}
-
 function findInjectableConstructors(type) {
-	return filter(findConstructors(type),
+	return filter(Find.constructors(type),
 				  function(constructor) {
 				      return isInjectable(constructor);
 				  });
+}
+
+function typeDefinesFieldOfType(container, fieldType) {
+    var fields = container.getFields();
+    for(var i=0; i<fields.length; i++) {
+        if (org.eclipse.jdt.core.Signature.toString(fields[i].getTypeSignature()) == fieldType.getElementName()) {
+            return true;
+        }
+    }
 }
 
 function moveMethodBetweenInjectables(fromMethod, toType) {
@@ -25,13 +30,13 @@ function moveMethodBetweenInjectables(fromMethod, toType) {
 	   var newFieldName = initLowerCase(toType.getElementName());
 	   if(!typeDefinesFieldOfType(refType, toType)) {
 	       edit.changeFile(refType.getCompilationUnit())
-	           .addEdit(addField(refType, toType, newFieldName))
-	           .addEdit(addImport(refType.getCompilationUnit(), toType));
+	           .addEdit(ChangeType.addField(refType, toType, newFieldName))
+	           .addEdit(ChangeType.addImport(refType.getCompilationUnit(), toType));
 	           
 	       foreach(findInjectableConstructors(refType), function(constructor){
 	           edit.changeFile(refType.getCompilationUnit())
-	               .addEdit(addParameterToMethod(constructor, toType, newFieldName))
-	               .addEdit(assignParameterToField(constructor, newFieldName, newFieldName));
+	               .addEdit(ChangeType.addParameterToMethod(constructor, toType, newFieldName))
+	               .addEdit(ChangeType.assignParameterToField(constructor, newFieldName, newFieldName));
 	       });
 	   }
 	   
@@ -45,40 +50,6 @@ function moveMethodBetweenInjectables(fromMethod, toType) {
     fromMethod.move(toType, null, null, false, null);
     fromMethod.getDeclaringType().getCompilationUnit().commitWorkingCopy(true, null);
     toType.getCompilationUnit().commitWorkingCopy(true, null);
-}
-
-function last(list) {
-    return list[list.length-1];
-}
-
-function addField(toType, fieldType, fieldName) {
-    var lastField = last(toType.getFields());
-    var offset = lastField.getSourceRange().getOffset() + lastField.getSourceRange().getLength();
-    var decl = "\n\tprivate "+fieldType.getElementName()+" "+fieldName+";";
-    return new org.eclipse.text.edits.InsertEdit(offset, decl);
-}
-
-function addImport(compilationUnit, importType) {
-    var lastImport = last(compilationUnit.getImports());
-    var offset = lastImport.getSourceRange().getOffset() + lastImport.getSourceRange().getLength();
-    var imp = "\nimport "+importType.getFullyQualifiedName()+";";
-    return new org.eclipse.text.edits.InsertEdit(offset, imp);    
-}
-
-function addParameterToMethod(method, paramType, paramName) {
-    var params = method.getParameters();
-    var lastParam = last(params);
-    var offset = lastParam.getSourceRange().getOffset() + lastParam.getSourceRange().getLength();
-    
-    return new org.eclipse.text.edits.InsertEdit(offset, ", "+paramType.getElementName()+" "+paramName);
-}
-
-function assignParameterToField(method, paramName, fieldName) {
-    var cu = method.getDeclaringType().getCompilationUnit();
-    var range = method.getSourceRange();
-    var offset = range.getOffset() + range.getLength() - 1;
-    var stmt = "this."+fieldName+" = "+paramName+";\n";
-    return new org.eclipse.text.edits.InsertEdit(offset, stmt);
 }
 
 function changeReferenceFieldTo(reference, newFieldName) {
@@ -118,15 +89,6 @@ function reformatFile(cu) {
 
 function initLowerCase(value) {
 	return value.substring(0,1).toLowerCase() + value.substring(1);
-}
-
-function typeDefinesFieldOfType(container, fieldType) {
-	var fields = container.getFields();
-	for(var i=0; i<fields.length; i++) {
-		if (org.eclipse.jdt.core.Signature.toString(fields[i].getTypeSignature()) == fieldType.getElementName()) {
-			return true;
-		}
-	}
 }
 
 function isInjectable(method) {

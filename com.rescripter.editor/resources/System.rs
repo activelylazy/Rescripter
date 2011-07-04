@@ -26,6 +26,10 @@ var Find = {
 	
 	referencesTo: function(element) {
 		return SearchHelper.findReferencesTo(element);
+	},
+
+	constructors: function(type) {
+		return Find.methodsByName(type, type.getElementName());
 	}
 	
 };
@@ -123,6 +127,10 @@ function first(list) {
     return list[0];
 }
 
+function last(list) {
+    return list[list.length-1];
+}
+
 function foreach(from, fun) {
     for(var i=0; i<from.length; i++) {
         fun(from[i]);
@@ -177,3 +185,37 @@ function replaceConstructorCall(constructor, newMethodName, useStaticImport) {
         }
 	}
 }
+
+var ChangeType = {
+    addField: function(toType, fieldType, fieldName) {
+	    var lastField = last(toType.getFields());
+	    var offset = lastField.getSourceRange().getOffset() + lastField.getSourceRange().getLength();
+	    var decl = "\n\tprivate "+fieldType.getElementName()+" "+fieldName+";";
+	    return new org.eclipse.text.edits.InsertEdit(offset, decl);
+	},
+
+	addImport: function(compilationUnit, importType) {
+	    var lastImport = last(compilationUnit.getImports());
+	    var offset = lastImport.getSourceRange().getOffset() + lastImport.getSourceRange().getLength();
+	    var imp = "\nimport "+importType.getFullyQualifiedName()+";";
+	    return new org.eclipse.text.edits.InsertEdit(offset, imp);    
+	},
+
+	addParameterToMethod: function(method, paramType, paramName) {
+	    var params = method.getParameters();
+	    var lastParam = last(params);
+	    var offset = lastParam.getSourceRange().getOffset() + lastParam.getSourceRange().getLength();
+	    
+	    return new org.eclipse.text.edits.InsertEdit(offset, ", "+paramType.getElementName()+" "+paramName);
+	},
+
+	assignParameterToField: function(method, paramName, fieldName) {
+	    var cu = method.getDeclaringType().getCompilationUnit();
+	    var range = method.getSourceRange();
+	    var offset = range.getOffset() + range.getLength() - 1;
+	    var stmt = "this."+fieldName+" = "+paramName+";\n";
+	    return new org.eclipse.text.edits.InsertEdit(offset, stmt);
+	}
+
+};
+
