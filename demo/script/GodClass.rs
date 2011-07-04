@@ -1,123 +1,118 @@
-
-function findMethodsByName(type, methodName) {
-	var methods = type.getMethods();
-	var matching = [];
-	for (var i=0; i<methods.length; i++) {
-		if (methods[i].getElementName() == methodName) {
-			matching.push(methods[i]);
-		}
-	}
-	return matching;
+function findConstructors(type) {
+	return Find.methodsByName(type, type.getElementName());
 }
 
-function moveMethodBetweenInjectables() {
-	var targetService = Find.typeByName("DataService");
-	var targetServiceConstructor = findMethodByName(targetService, "DataService");
+function findInjectableConstructors(type) {
+	return filter(findConstructors(type),
+				  function(constructor) {
+				      return isInjectable(constructor);
+				  });
+}
+
+function moveMethodBetweenInjectables(fromMethod, toType) {
+    var fromType = fromMethod.getDeclaringType();
+	var fromConstructors = findInjectableConstructors(fromType);
+	var toConstructors = findInjectableConstructors(toType);
 	
-	var sourceService = Find.typeByName("GodClass");
-	var sourceServiceConstructor = findMethodByName(sourceService, "GodClass");
-	
-	if (!isInjectable(sourceServiceConstructor)) {
-		Alert.error("Source class is not injectable");
-		return;
-	} 
-	if (!isInjectable(targetServiceConstructor)) {
-		Alert.error("Target class is not injectable");
+	if (fromConstructors.length < 1 || toConstructors.length < 1) {
+		Alert.error("Can only move methods between classes that have an @Inject constructor");
 		return;
 	}
-
-	var methodToMove = findMethodByName(sourceService, "someBusinessLogic");
-	if (methodToMove == undefined) {
-		Alert.error("No such method to move");
-		return;
-	}
+	var edit = new MultiSourceChange();
 	
-	var references = Find.referencesTo(methodToMove);
-	for(var i=0; i<references.length; i++) {
-		var refType = references[i].getElement().getDeclaringType();
-		var newFieldName = initLowerCase(targetService.getElementName());
-		if (!typeDefinesFieldOfType(refType, targetService)) {
-			changeReferenceFieldTo(references[i], newFieldName);
-			addField(refType, targetService);
-			addImport(refType.getCompilationUnit(), targetService);
-			addInjectableToConstructors(findMethodsByName(refType, refType.getElementName()), targetService, newFieldName);
-			refType.getCompilationUnit().commitWorkingCopy(true, null);
-		}
-	}
+	foreach(Find.referencesTo(fromMethod), function(reference) {
+	   var refType = reference.getElement().getDeclaringType();
+	   var newFieldName = initLowerCase(toType.getElementName());
+	   if(!typeDefinesFieldOfType(refType, toType)) {
+	       edit.changeFile(refType.getCompilationUnit())
+	           .addEdit(addField(refType, toType, newFieldName))
+	           .addEdit(addImport(refType.getCompilationUnit(), toType));
+	           
+	       foreach(findInjectableConstructors(refType), function(constructor){
+	           edit.changeFile(refType.getCompilationUnit())
+	               .addEdit(addParameterToMethod(constructor, toType, newFieldName))
+	               .addEdit(assignParameterToField(constructor, newFieldName, newFieldName));
+	       });
+	   }
+	   
+	   edit.changeFile(refType.getCompilationUnit())
+	       .addEdit(changeReferenceFieldTo(reference, newFieldName));
+	});
 	
-	methodToMove.move(targetService, null, null, false, null);
-	sourceService.getCompilationUnit().commitWorkingCopy(true, null);
-	targetService.getCompilationUnit().commitWorkingCopy(true, null);
+	
+	edit.apply();
+
+    fromMethod.move(toType, null, null, false, null);
 }
 
-function addInjectableToConstructors(constructors, paramType, paramName) {
-	for(var i=0; i<constructors.length; i++) {
-		// Only amend @Inject constructors, we cannot know what to do with others
-		if (isInjectable(constructors[i])) {
-			assignParameterToField(constructors[i], paramType, paramName, paramName);
-			addParameterToMethod(constructors[i], paramType, paramName);
-		}
-	}
+function last(list) {
+    return list[list.length-1];
 }
 
-function assignParameterToField(method, paramType, paramName, fieldName) {
-	var cu = method.getDeclaringType().getCompilationUnit();
-	var formatter = org.eclipse.jdt.core.ToolFactory.createCodeFormatter(null);
-	var range = method.getSourceRange();
-	ChangeText.inCompilationUnit(method.getDeclaringType().getCompilationUnit(),
-								 method.getSourceRange().getOffset() + method.getSourceRange().getLength() - 1,
-								 0, "this."+fieldName+" = "+paramName+";\n");
-	var indent_edit = formatter.format(org.eclipse.jdt.core.formatter.CodeFormatter.K_COMPILATION_UNIT, 
-    										cu.getSource(), range.getOffset(), range.getLength()+fieldName.length+paramName.length+10, 0, null);
-	cu.applyTextEdit(indent_edit, null);
-	cu.reconcile();								 		                                                       
-}
-
-function addParameterToMethod(method, paramType, paramName) {
-    var endParamList =  ASTTokenFinder.findTokenOfType(method.getDeclaringType().getCompilationUnit(),
-                                                       org.eclipse.jdt.core.compiler.ITerminalSymbols.TokenNameRPAREN,
-                                                       method.getSourceRange().getOffset(),
-                                                       method.getSourceRange().getLength());
-	ChangeText.inCompilationUnit(method.getDeclaringType().getCompilationUnit(),
-								 endParamList.getOffset(), 0, ", "+paramType.getElementName()+" "+paramName);
-}
-
-var lastIdentifierOffset;
-var lastIdentifierLength;
-var found = false;
-function changeReferenceFieldTo(reference, newField) {
-	ASTTokenFinder.scanTokens(reference.getElement().getCompilationUnit(), 
-								reference.getElement().getSourceRange().getOffset(), 
-								reference.getOffset() - reference.getElement().getSourceRange().getOffset(),
-		function(tokenType, offset, length) {
-			if (!found && tokenType == org.eclipse.jdt.core.compiler.ITerminalSymbols.TokenNameIdentifier) {
-				if (offset == reference.getOffset()) {
-					found = true;
-					return;
-				}
-				lastIdentifierOffset = offset;
-				lastIdentifierLength = length;
-			}
-		}
-	);
-
-	if (lastIdentifierLength == 0) {
-		Alert.error("Couldn't figure out the field calling the method to move");
-		return;
-	}
-	ChangeText.inCompilationUnit(reference.getElement().getCompilationUnit(),
-									lastIdentifierOffset, lastIdentifierLength, newField);
+function addField(toType, fieldType, fieldName) {
+    var lastField = last(toType.getFields());
+    var offset = lastField.getSourceRange().getOffset() + lastField.getSourceRange().getLength();
+    var decl = "\n\tprivate "+fieldType.getElementName()+" "+fieldName+";";
+    return new org.eclipse.text.edits.InsertEdit(offset, decl);
 }
 
 function addImport(compilationUnit, importType) {
-	compilationUnit.createImport(importType.getFullyQualifiedName(), 
-		null, org.eclipse.jdt.core.Flags.AccDefault, null);
+    var lastImport = last(compilationUnit.getImports());
+    var offset = lastImport.getSourceRange().getOffset() + lastImport.getSourceRange().getLength();
+    var imp = "\nimport "+importType.getFullyQualifiedName()+";";
+    return new org.eclipse.text.edits.InsertEdit(offset, imp);    
 }
 
-function addField(container, fieldType) {
-	var decl = "private "+fieldType.getElementName()+" "+initLowerCase(fieldType.getElementName())+";";
-	container.createField(decl,null, false, null);
+function addParameterToMethod(method, paramType, paramName) {
+    var params = method.getParameters();
+    var lastParam = last(params);
+    var offset = lastParam.getSourceRange().getOffset() + lastParam.getSourceRange().getLength();
+    
+    return new org.eclipse.text.edits.InsertEdit(offset, ", "+paramType.getElementName()+" "+paramName);
 }
+
+function assignParameterToField(method, paramName, fieldName) {
+    var cu = method.getDeclaringType().getCompilationUnit();
+    var range = method.getSourceRange();
+    var offset = range.getOffset() + range.getLength() - 1;
+    var stmt = "this."+fieldName+" = "+paramName+";\n";
+    return new org.eclipse.text.edits.InsertEdit(offset, stmt);
+}
+
+function changeReferenceFieldTo(reference, newFieldName) {
+    var lastIdentifier = last(filter(ScanTokens.in(reference.getElement().getCompilationUnit(),
+                                                   reference.getElement().getSourceRange().getOffset(),
+                                                   reference.getOffset() - 1 - reference.getElement().getSourceRange().getOffset()),
+                              function(match) {
+                                  return match.tokenType == org.eclipse.jdt.core.compiler.ITerminalSymbols.TokenNameIdentifier;
+                              }));
+
+    if (lastIdentifier == undefined) {
+        Alert.error("Couldn't figure out the field calling the method to move");
+        return;
+    }
+    
+    return new org.eclipse.text.edits.ReplaceEdit(lastIdentifier.getOffset(), lastIdentifier.getLength(), newFieldName);
+}
+
+
+
+/*
+ * Not used, so far
+ */
+function reformatFile(cu) {
+    var formatter = org.eclipse.jdt.core.ToolFactory.createCodeFormatter(null);
+    return formatter.format(org.eclipse.jdt.core.formatter.CodeFormatter.K_COMPILATION_UNIT, 
+                            cu.getSource(),
+                            cu.getSourceRange().getOffset(),
+                            cu.getSourceRange().getLength(), 0, null);
+}
+
+
+
+
+
+
 
 function initLowerCase(value) {
 	return value.substring(0,1).toLowerCase() + value.substring(1);
@@ -142,4 +137,5 @@ function isInjectable(method) {
 	return false;
 }
 
-moveMethodBetweenInjectables();
+moveMethodBetweenInjectables(Find.methodByName(Find.typeByName("GodClass"), "someBusinessLogic"),
+                             Find.typeByName("DataService"));
