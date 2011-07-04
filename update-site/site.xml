@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/com.rescripter_1.0.0.jar" id="com.rescripter" version="1.0.0"/>
+   <feature url="features/com.rescripter_1.0.1.jar" id="com.rescripter" version="1.0.1"/>
 </site>
