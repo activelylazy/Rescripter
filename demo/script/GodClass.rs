@@ -5,15 +5,6 @@ function findInjectableConstructors(type) {
 				  });
 }
 
-function typeDefinesFieldOfType(container, fieldType) {
-    var fields = container.getFields();
-    for(var i=0; i<fields.length; i++) {
-        if (org.eclipse.jdt.core.Signature.toString(fields[i].getTypeSignature()) == fieldType.getElementName()) {
-            return true;
-        }
-    }
-}
-
 function moveMethodBetweenInjectables(fromMethod, toType) {
     var fromType = fromMethod.getDeclaringType();
 	var fromConstructors = findInjectableConstructors(fromType);
@@ -27,8 +18,9 @@ function moveMethodBetweenInjectables(fromMethod, toType) {
 	
 	foreach(Find.referencesTo(fromMethod), function(reference) {
 	   var refType = reference.getElement().getDeclaringType();
-	   var newFieldName = initLowerCase(toType.getElementName());
-	   if(!typeDefinesFieldOfType(refType, toType)) {
+	   var field = Find.fieldOfType(refType, toType);
+	   if(field == undefined) {
+		   var newFieldName = initLowerCase(toType.getElementName());
 	       edit.changeFile(refType.getCompilationUnit())
 	           .addEdit(ChangeType.addField(refType, toType, newFieldName))
 	           .addEdit(ChangeType.addImport(refType.getCompilationUnit(), toType));
@@ -38,6 +30,8 @@ function moveMethodBetweenInjectables(fromMethod, toType) {
 	               .addEdit(ChangeType.addParameterToMethod(constructor, toType, newFieldName))
 	               .addEdit(ChangeType.assignParameterToField(constructor, newFieldName, newFieldName));
 	       });
+	   } else {
+	       newFieldName = field.getElementName();
 	   }
 	   
 	   edit.changeFile(refType.getCompilationUnit())
@@ -47,6 +41,8 @@ function moveMethodBetweenInjectables(fromMethod, toType) {
 	
 	edit.apply();
 
+    fromMethod.getDeclaringType().getCompilationUnit().becomeWorkingCopy(null);
+    toType.getCompilationUnit().becomeWorkingCopy(null);
     fromMethod.move(toType, null, null, false, null);
     fromMethod.getDeclaringType().getCompilationUnit().commitWorkingCopy(true, null);
     toType.getCompilationUnit().commitWorkingCopy(true, null);

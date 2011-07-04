@@ -30,8 +30,17 @@ var Find = {
 
 	constructors: function(type) {
 		return Find.methodsByName(type, type.getElementName());
-	}
+	},
 	
+	fieldOfType: function (container, fieldType) {
+	    var fields = container.getFields();
+	    for(var i=0; i<fields.length; i++) {
+	        if (org.eclipse.jdt.core.Signature.toString(fields[i].getTypeSignature()) == fieldType.getElementName()) {
+	            return fields[i];
+	        }
+	    }
+	}
+
 };
 
 
