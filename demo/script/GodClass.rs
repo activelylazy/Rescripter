@@ -43,6 +43,8 @@ function moveMethodBetweenInjectables(fromMethod, toType) {
 	edit.apply();
 
     fromMethod.move(toType, null, null, false, null);
+    fromMethod.getDeclaringType().getCompilationUnit().commitWorkingCopy(true, null);
+    toType.getCompilationUnit().commitWorkingCopy(true, null);
 }
 
 function last(list) {
