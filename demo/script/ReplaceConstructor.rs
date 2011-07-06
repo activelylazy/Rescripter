@@ -1,4 +1,4 @@
-var matches = Search.forReferencesToMethod("com.example.MyNumber(Double)");
+var matches = Search.forReferencesToMethod("com.example.MyNumber(String)");
 
 var edit = new MultiSourceChange();
 foreach(filter(matches, Search.onlySourceMatches),
