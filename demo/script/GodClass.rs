@@ -50,6 +50,16 @@ function moveMethodBetweenInjectables(fromMethod, toType) {
     fromMethod.getDeclaringType().getCompilationUnit().commitWorkingCopy(true, null);
     toType.getCompilationUnit().commitWorkingCopy(true, null);
     
+    edit = new MultiSourceChange();
+    
+    var newMethod = Find.methodByName(toType, methodName);
+    var reformatEdit = reformat(toType.getCompilationUnit(), newMethod.getSourceRange().getOffset(), newMethod.getSourceRange().getLength());
+    
+    edit.changeFile(toType.getCompilationUnit())
+        .addEdit(reformatEdit);
+    
+    edit.apply();
+        
 /*    
     edit = new MultiSourceChange();
 
@@ -88,7 +98,7 @@ function changeReferenceFieldTo(reference, newFieldName) {
 
 function reformat(cu, offset, length) {
     var formatter = org.eclipse.jdt.core.ToolFactory.createCodeFormatter(null);
-    return formatter.format(org.eclipse.jdt.core.formatter.CodeFormatter.K_STATEMENTS, 
+    return formatter.format(org.eclipse.jdt.core.formatter.CodeFormatter.K_UNKNOWN, 
                             cu.getSource(),
                             offset,
                             length, 0, null);
