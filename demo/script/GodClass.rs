@@ -15,7 +15,6 @@ function moveMethodBetweenInjectables(fromMethod, toType) {
 		return;
 	}
 	var edit = new MultiSourceChange();
-	
 	foreach(Find.referencesTo(fromMethod), function(reference) {
 	   var refType = reference.getElement().getDeclaringType();
 	   var field = Find.fieldOfType(refType, toType);
@@ -70,25 +69,6 @@ function moveMethodBetweenInjectables(fromMethod, toType) {
 	});       
     
     edit.apply();
-        
-/*    
-    edit = new MultiSourceChange();
-
-    // Now re-format each method that calls us
-    foreach(Find.referencesTo(toType.getMethod(methodName, params)), function(reference) {
-        var cu = reference.getElement().getDeclaringType().getCompilationUnit();
-        //Alert.info("Reference is to "+reference.getElement().getSourceRange());
-        Alert.info("Reformatting "+cu.getSource().substring(reference.getElement().getSourceRange().getOffset(), reference.getElement().getSourceRange().getOffset() + reference.getElement().getSourceRange().getLength()));
-        var reformatEdit = reformat(cu, reference.getElement().getSourceRange().getOffset(), reference.getElement().getSourceRange().getLength());
-        if (reformatEdit != undefined) {
-	        edit.changeFile(cu)
-	            .addEdit(reformatEdit);
-	    } else {
-	       Alert.info("Failed to reformat "+reference);
-	    }
-    });
-    edit.apply();
-*/    
 }
 
 function changeReferenceFieldTo(reference, newFieldName) {
