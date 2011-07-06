@@ -43,6 +43,26 @@ var Find = {
 
 };
 
+var Search = {
+    forReferencesToMethod: function(signature) {
+        return SearchHelper.findMethodReferences(signature)
+    },
+    
+    onlySourceMatches: function (match) {
+	    if (match.getElement().getClass().isAssignableFrom(org.eclipse.jdt.internal.core.ResolvedSourceMethod)) {
+	        return true;
+	    } else if (match.getElement().getClass().isAssignableFrom(org.eclipse.jdt.internal.core.ResolvedSourceField)) {
+	        return true;
+	    } else if (match.getElement().getClass().isAssignableFrom(org.eclipse.jdt.internal.core.Initializer)) {
+	        return true;
+	    } else if (match.getElement().getClass().isAssignableFrom(org.eclipse.jdt.internal.core.ResolvedBinaryMethod)) {
+	        return false;
+	    } else {
+	        throw "Unexpected class "+match.getElement().getClass();
+	    }
+	}
+    
+};
 
 function Token(cu, tokenType, offset, length) {
 	this.cu = cu;
@@ -88,6 +108,7 @@ var Rename = {
 function SourceChange(cu) {
 	this.cu = cu;
 	this.textEdit = new org.eclipse.text.edits.MultiTextEdit();
+	this.imports = {};
 	
 	this.apply = function() {
 		this.cu.becomeWorkingCopy(null);
@@ -96,7 +117,9 @@ function SourceChange(cu) {
 	};
 	
 	this.addEdit = function(textedit) {
-		this.textEdit.addChild(textedit);
+        if (textedit != undefined) {	   
+		    this.textEdit.addChild(textedit);
+		}
 		return this;
 	}
 	
@@ -108,6 +131,14 @@ function SourceChange(cu) {
 	this.replace = function(offset, length, text) {
 		this.addEdit(new org.eclipse.text.edits.ReplaceEdit(offset, length, text));
 		return this;
+	}
+	
+	this.addImport = function(cu, import) {
+	   if (this.imports[import] == undefined) {
+	       this.imports[import] = import;
+	       this.addEdit(Refactor.createImportEdit(cu, import));
+	   }
+	   return this;
 	}
 	
 	return this;
@@ -136,7 +167,7 @@ function first(list) {
     return list[0];
 }
 
-function last(list) {
+function last(list) {  
     return list[list.length-1];
 }
 
@@ -164,34 +195,26 @@ function filter(from, test) {
 	return results;
 }
 
-function replaceConstructorCall(constructor, newMethodName, useStaticImport) {
-	var newMethod = constructor.getDeclaringType().getMethod(newMethodName, constructor.getParameterTypes());
-	if (newMethod.getSignature() == undefined) {
-		Alert.error("Failed to find "+constructor.getDeclaringType().getFullyQualifiedName()+"."+newMethodName);
-	}
-	var references = SearchHelper.findReferencesTo(constructor);
-	
-	for(var i=0; i<references.length; i++) {
-		var startOfNew = references[i].offset;
-        var endOfCons = ASTTokenFinder.findTokenOfType(references[i].getElement().getCompilationUnit(),
-                                                       org.eclipse.jdt.core.compiler.ITerminalSymbols.TokenNameLPAREN,
-                                                       references[i].getOffset(),
-                                                       references[i].getLength())
-                            .getOffset();
-                            
-        if (useStaticImport) {
-	        ChangeText.inCompilationUnit(references[i].getElement().getCompilationUnit(),
-	                                     startOfNew, endOfCons-startOfNew,
-	                                     newMethodName);
-        	references[i].getElement().getCompilationUnit().createImport(
-        			constructor.getDeclaringType().getFullyQualifiedName()+"."+newMethodName,
-        			null, org.eclipse.jdt.core.Flags.AccStatic, null);
-        	references[i].getElement().getCompilationUnit().commitWorkingCopy(true, null);
-        } else {
-	        ChangeText.inCompilationUnit(references[i].getElement().getCompilationUnit(),
-	                                     startOfNew, endOfCons-startOfNew,
-	                                     constructor.getDeclaringType().getElementName()+"."+newMethodName);
+var Refactor = {
+    createImportEdit: function(cu, text) {
+        var matching = filter(cu.getImports(), function(import) {
+            return import.getElementName() == text;
+        });
+        if (matching.length == 0) {
+            var lastImport = first(cu.getImports())
+            var offset = lastImport.getSourceRange().getOffset() + lastImport.getSourceRange().getLength();
+            return new org.eclipse.text.edits.InsertEdit(offset, "\nimport "+text+";");
         }
+    },
+
+	createReplaceMethodCallEdit: function(cu, offset, length, newCall) {
+	    var startOfNew = offset;
+	    var endOfCons = ASTTokenFinder.findTokenOfType(cu,
+	                                                   org.eclipse.jdt.core.compiler.ITerminalSymbols.TokenNameLPAREN,
+	                                                   offset,
+	                                                   length)
+	                        .getOffset();
+	    return new org.eclipse.text.edits.ReplaceEdit(startOfNew, endOfCons-startOfNew, newCall);
 	}
 }
 

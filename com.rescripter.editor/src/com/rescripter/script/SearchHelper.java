@@ -65,4 +65,32 @@ public class SearchHelper {
         
         return references.toArray(new SearchMatch[]{});
     }
+    
+    public SearchMatch[] findMethodReferences(String methodName) throws CoreException {
+        final List<SearchMatch> references = new ArrayList<SearchMatch>();
+        
+        SearchPattern pattern = SearchPattern.createPattern(methodName, 
+                                                            IJavaSearchConstants.ALL_OCCURRENCES,
+                                                            IJavaSearchConstants.REFERENCES,
+                                                            SearchPattern.R_FULL_MATCH);
+        if (pattern == null) {
+            // E.g. element not found / no longer exists
+            throw new NullPointerException("No pattern!?");
+        }
+        
+        SearchRequestor requestor = new SearchRequestor() {
+            @Override public void acceptSearchMatch(SearchMatch match) throws CoreException {
+                references.add(match);
+            }
+        };
+        
+        new SearchEngine().search(pattern,
+                                  new SearchParticipant[] { SearchEngine.getDefaultSearchParticipant() },
+                                  SearchEngine.createWorkspaceScope(),
+                                  requestor,
+                                  null);
+        
+        return references.toArray(new SearchMatch[]{});
+    }
+    
 }
