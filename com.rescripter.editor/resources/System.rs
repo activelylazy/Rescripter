@@ -30,6 +30,26 @@ var Find = {
 	
 };
 
+var Search = {
+    forReferencesToMethod: function(signature) {
+        return SearchHelper.findMethodReferences(signature)
+    },
+    
+    onlySourceMatches: function (match) {
+	    if (match.getElement().getClass().isAssignableFrom(org.eclipse.jdt.internal.core.ResolvedSourceMethod)) {
+	        return true;
+	    } else if (match.getElement().getClass().isAssignableFrom(org.eclipse.jdt.internal.core.ResolvedSourceField)) {
+	        return true;
+	    } else if (match.getElement().getClass().isAssignableFrom(org.eclipse.jdt.internal.core.Initializer)) {
+	        return true;
+	    } else if (match.getElement().getClass().isAssignableFrom(org.eclipse.jdt.internal.core.ResolvedBinaryMethod)) {
+	        return false;
+	    } else {
+	        throw "Unexpected class "+match.getElement().getClass();
+	    }
+	}
+    
+};
 
 function Token(cu, tokenType, offset, length) {
 	this.cu = cu;
@@ -65,20 +85,6 @@ var ScanTokens = {
 		return tokens;	
 	}
 };
-
-function onlySourceMatches(match) {
-    if (match.getElement().getClass().isAssignableFrom(org.eclipse.jdt.internal.core.ResolvedSourceMethod)) {
-        return true;
-    } else if (match.getElement().getClass().isAssignableFrom(org.eclipse.jdt.internal.core.ResolvedSourceField)) {
-        return true;
-    } else if (match.getElement().getClass().isAssignableFrom(org.eclipse.jdt.internal.core.Initializer)) {
-        return true;
-    } else if (match.getElement().getClass().isAssignableFrom(org.eclipse.jdt.internal.core.ResolvedBinaryMethod)) {
-        return false;
-    } else {
-        throw "Unexpected class "+match.getElement().getClass();
-    }
-}
 
 var Rename = {
 	method: function(method, newName) {
@@ -117,23 +123,12 @@ function SourceChange(cu) {
 	this.addImport = function(cu, import) {
 	   if (this.imports[import] == undefined) {
 	       this.imports[import] = import;
-	       this.addEdit(addImport(cu, import));
+	       this.addEdit(Refactor.createImportEdit(cu, import));
 	   }
 	   return this;
 	}
 	
 	return this;
-}
-
-function addImport(cu, text) {
-    var matching = filter(cu.getImports(), function(import) {
-        return import.getElementName() == text;
-    });
-    if (matching.length == 0) {
-        var lastImport = first(cu.getImports())
-        var offset = lastImport.getSourceRange().getOffset() + lastImport.getSourceRange().getLength();
-        return new org.eclipse.text.edits.InsertEdit(offset, "\nimport "+text+";");
-    }
 }
 
 function MultiSourceChange() {
@@ -157,6 +152,10 @@ function MultiSourceChange() {
 
 function first(list) {  
     return list[0];
+}
+
+function last(list) {  
+    return list[list.length-1];
 }
 
 function foreach(from, fun) {
@@ -183,12 +182,27 @@ function filter(from, test) {
 	return results;
 }
 
-function replaceMethodCall(cu, offset, length, newCall) {
-    var startOfNew = offset;
-    var endOfCons = ASTTokenFinder.findTokenOfType(cu,
-                                                   org.eclipse.jdt.core.compiler.ITerminalSymbols.TokenNameLPAREN,
-                                                   offset,
-                                                   length)
-                        .getOffset();
-    return new org.eclipse.text.edits.ReplaceEdit(startOfNew, endOfCons-startOfNew, newCall);
-}
+var Refactor = {
+    createImportEdit: function(cu, text) {
+        var matching = filter(cu.getImports(), function(import) {
+            return import.getElementName() == text;
+        });
+        if (matching.length == 0) {
+            var lastImport = first(cu.getImports())
+            var offset = lastImport.getSourceRange().getOffset() + lastImport.getSourceRange().getLength();
+            return new org.eclipse.text.edits.InsertEdit(offset, "\nimport "+text+";");
+        }
+    },
+
+	createReplaceMethodCallEdit: function(cu, offset, length, newCall) {
+	    var startOfNew = offset;
+	    var endOfCons = ASTTokenFinder.findTokenOfType(cu,
+	                                                   org.eclipse.jdt.core.compiler.ITerminalSymbols.TokenNameLPAREN,
+	                                                   offset,
+	                                                   length)
+	                        .getOffset();
+	    return new org.eclipse.text.edits.ReplaceEdit(startOfNew, endOfCons-startOfNew, newCall);
+	}
+
+};
+
