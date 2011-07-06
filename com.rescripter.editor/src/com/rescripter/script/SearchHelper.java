@@ -70,9 +70,9 @@ public class SearchHelper {
         final List<SearchMatch> references = new ArrayList<SearchMatch>();
         
         SearchPattern pattern = SearchPattern.createPattern(methodName, 
-                                                            IJavaSearchConstants.CONSTRUCTOR,
+                                                            IJavaSearchConstants.ALL_OCCURRENCES,
                                                             IJavaSearchConstants.REFERENCES,
-                                                            SearchPattern.R_EQUIVALENT_MATCH);
+                                                            SearchPattern.R_FULL_MATCH);
         if (pattern == null) {
             // E.g. element not found / no longer exists
             throw new NullPointerException("No pattern!?");
