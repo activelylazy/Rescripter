@@ -52,11 +52,22 @@ function moveMethodBetweenInjectables(fromMethod, toType) {
     
     edit = new MultiSourceChange();
     
+    // Reformat the method we moved
     var newMethod = Find.methodByName(toType, methodName);
-    var reformatEdit = reformat(toType.getCompilationUnit(), newMethod.getSourceRange().getOffset(), newMethod.getSourceRange().getLength());
-    
     edit.changeFile(toType.getCompilationUnit())
-        .addEdit(reformatEdit);
+        .addEdit(reformat(toType.getCompilationUnit(), newMethod.getSourceRange().getOffset(), newMethod.getSourceRange().getLength()));
+        
+    // Reformat each of the @Inject constructors in each class that references this
+    foreach(Find.referencesTo(newMethod), function(reference) {
+        var type = reference.getElement().getDeclaringType();
+        var cu = type.getCompilationUnit();
+        foreach(findInjectableConstructors(type), function(constructor) {
+	        edit.changeFile(cu)
+	            .addEdit(reformat(cu,
+	                              constructor.getSourceRange().getOffset(),
+	                              constructor.getSourceRange().getLength()));
+	    }); 
+	});       
     
     edit.apply();
         

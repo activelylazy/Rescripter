@@ -222,7 +222,7 @@ var ChangeType = {
 	    var cu = method.getDeclaringType().getCompilationUnit();
 	    var range = method.getSourceRange();
 	    var offset = range.getOffset() + range.getLength() - 1;
-	    var stmt = "\tthis."+fieldName+" = "+paramName+";\n\t";
+	    var stmt = "this."+fieldName+" = "+paramName+";\n";
 	    return new org.eclipse.text.edits.InsertEdit(offset, stmt);
 	}
 
