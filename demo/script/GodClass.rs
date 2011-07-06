@@ -40,12 +40,34 @@ function moveMethodBetweenInjectables(fromMethod, toType) {
 	
 	
 	edit.apply();
+	
+	var methodName = fromMethod.getElementName();
+	var params = fromMethod.getParameterTypes();
 
     fromMethod.getDeclaringType().getCompilationUnit().becomeWorkingCopy(null);
     toType.getCompilationUnit().becomeWorkingCopy(null);
     fromMethod.move(toType, null, null, false, null);
     fromMethod.getDeclaringType().getCompilationUnit().commitWorkingCopy(true, null);
     toType.getCompilationUnit().commitWorkingCopy(true, null);
+    
+/*    
+    edit = new MultiSourceChange();
+
+    // Now re-format each method that calls us
+    foreach(Find.referencesTo(toType.getMethod(methodName, params)), function(reference) {
+        var cu = reference.getElement().getDeclaringType().getCompilationUnit();
+        //Alert.info("Reference is to "+reference.getElement().getSourceRange());
+        Alert.info("Reformatting "+cu.getSource().substring(reference.getElement().getSourceRange().getOffset(), reference.getElement().getSourceRange().getOffset() + reference.getElement().getSourceRange().getLength()));
+        var reformatEdit = reformat(cu, reference.getElement().getSourceRange().getOffset(), reference.getElement().getSourceRange().getLength());
+        if (reformatEdit != undefined) {
+	        edit.changeFile(cu)
+	            .addEdit(reformatEdit);
+	    } else {
+	       Alert.info("Failed to reformat "+reference);
+	    }
+    });
+    edit.apply();
+*/    
 }
 
 function changeReferenceFieldTo(reference, newFieldName) {
@@ -64,24 +86,13 @@ function changeReferenceFieldTo(reference, newFieldName) {
     return new org.eclipse.text.edits.ReplaceEdit(lastIdentifier.getOffset(), lastIdentifier.getLength(), newFieldName);
 }
 
-
-
-/*
- * Not used, so far
- */
-function reformatFile(cu) {
+function reformat(cu, offset, length) {
     var formatter = org.eclipse.jdt.core.ToolFactory.createCodeFormatter(null);
-    return formatter.format(org.eclipse.jdt.core.formatter.CodeFormatter.K_COMPILATION_UNIT, 
+    return formatter.format(org.eclipse.jdt.core.formatter.CodeFormatter.K_STATEMENTS, 
                             cu.getSource(),
-                            cu.getSourceRange().getOffset(),
-                            cu.getSourceRange().getLength(), 0, null);
+                            offset,
+                            length, 0, null);
 }
-
-
-
-
-
-
 
 function initLowerCase(value) {
 	return value.substring(0,1).toLowerCase() + value.substring(1);
