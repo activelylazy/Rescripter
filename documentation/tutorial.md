@@ -105,7 +105,7 @@ Although IType, IMethod and SearchMatch provide the locations of some key parts 
 For example, when we have a search match identifying a method call, we get the whole method invocation - both the method name and the parameter list. I.e. the part of the line:
     System.out.println("The name is "+person.```getName()```);
 
-If we, say, wanted to rename the method, we need to use the syntax tree to identify just the method name and ignore the parentheses and parameters. we can do this by using the token scanner.
+If we, say, wanted to rename the method, we need to identify just the method name and ignore the parentheses and parameters. we can do this by using the token scanner.
 
 ```java
 var type = Find.typeByName("Person");
@@ -124,7 +124,7 @@ var identifiers = filter(tokens,
 Alert.info("Found identifier: "+identifiers[0]+". Text is "+identifiers[0].getSource());
 ```
 
-There are two ke steps to this.
+There are two key steps to this.
 
 ### Scan tokens
 First we get a list of tokens. We get this by scanning the source of the type's file, but only the range identified by the reference. I.e. this is the section of the source file that covers the method call ```getName()```.
@@ -137,7 +137,7 @@ We then filter this to just identifier tokens (see [org.eclipse.jdt.core.compile
 Having identified types, methods and tokens within source files, we might want to make changes to the source code. 
 
 ### Insert Source Change
-The simplest change we can make is to insert a change into the source file.
+The simplest change we can make is to insert text into the source file.
 
 ```java
 var type = Find.typeByName("Person");
@@ -156,7 +156,7 @@ This simply identifies the getName method and adds a comment immediately before 
     public String getName() { return name; }
 ```
 
-The SourceChange allows us to collect a sequence of edits and apply in one go. The offsets & lengths identify positions within the _unchanged_ file.
+The SourceChange allows us to collect a sequence of edits and apply in one go. The offsets & lengths identify positions within the _unchanged_ file. Once a change has been applied to a file, any source ranges identified before the change are invalid and must be re-calculated.
 
 ### Add Import
 We can also add an import:
