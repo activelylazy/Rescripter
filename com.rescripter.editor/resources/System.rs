@@ -232,13 +232,6 @@ var ChangeType = {
 	    return new org.eclipse.text.edits.InsertEdit(offset, decl);
 	},
 
-	addImport: function(compilationUnit, importType) {
-	    var lastImport = last(compilationUnit.getImports());
-	    var offset = lastImport.getSourceRange().getOffset() + lastImport.getSourceRange().getLength();
-	    var imp = "\nimport "+importType.getFullyQualifiedName()+";";
-	    return new org.eclipse.text.edits.InsertEdit(offset, imp);    
-	},
-
 	addParameterToMethod: function(method, paramType, paramName) {
 	    var params = method.getParameters();
 	    var lastParam = last(params);

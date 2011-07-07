@@ -22,7 +22,7 @@ function moveMethodBetweenInjectables(fromMethod, toType) {
 		   var newFieldName = initLowerCase(toType.getElementName());
 	       edit.changeFile(refType.getCompilationUnit())
 	           .addEdit(ChangeType.addField(refType, toType, newFieldName))
-	           .addEdit(ChangeType.addImport(toType));
+	           .addImport(toType.getFullyQualifiedName());
 	           
 	       foreach(findInjectableConstructors(refType), function(constructor){
 	           edit.changeFile(refType.getCompilationUnit())
