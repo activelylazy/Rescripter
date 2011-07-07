@@ -133,10 +133,10 @@ function SourceChange(cu) {
 		return this;
 	}
 	
-	this.addImport = function(cu, import) {
+	this.addImport = function(import) {
 	   if (this.imports[import] == undefined) {
 	       this.imports[import] = import;
-	       this.addEdit(Refactor.createImportEdit(cu, import));
+	       this.addEdit(Refactor.createImportEdit(this.cu, import));
 	   }
 	   return this;
 	}
@@ -201,8 +201,14 @@ var Refactor = {
             return import.getElementName() == text;
         });
         if (matching.length == 0) {
+            var offset;
             var lastImport = first(cu.getImports())
-            var offset = lastImport.getSourceRange().getOffset() + lastImport.getSourceRange().getLength();
+            if (lastImport == undefined) {
+                var packageDecl = cu.getPackageDeclarations()[0];
+                offset = packageDecl.getSourceRange().getOffset() + packageDecl.getSourceRange().getLength();
+            } else {
+                offset = lastImport.getSourceRange().getOffset() + lastImport.getSourceRange().getLength();
+            }
             return new org.eclipse.text.edits.InsertEdit(offset, "\nimport "+text+";");
         }
     },
