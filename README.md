@@ -15,33 +15,9 @@ Create a new update site with the URL:
 
 >    https://raw.github.com/activelylazy/Rescripter/master/update-site/
 
-# An Example Would Help
+# How Do I Use It?
 
-Say you want to replace a constructor call
-
-```
-MyNumber someNumber = new MyNumber("123")
-```
-
-With a call to a static factory method
-
-```
-import static com.example.MyNumber.valueOf;
-...
-MyNumber someNumber = valueOf("123");
-```
-
-Then you can do this by running the following .rs script:
-
-```
-var myNumber = Find.typeByName("MyNumber");
-var cons = findMethodByName(myNumber, "MyNumber");
-replaceConstructorCall(cons, "valueOf", true);
-```
-
-# Getting Started
-
-For more details and examples follow the [tutorial](https://github.com/activelylazy/Rescripter/blob/master/documentation/tutorial.md)
+For more details and examples see the [tutorial](https://github.com/activelylazy/Rescripter/blob/master/documentation/tutorial.md)
 
 # Help & Support
 
