@@ -149,7 +149,7 @@ edit.insert(method.getSourceRange().getOffset(),
 edit.apply();
 ```
 
-This simply identifies the getName method and adds a comment immediately before the method. So we now have:
+This simply identifies the getName method and adds a comment immediately before. So we now have:
 
 ```java
     /* This is a comment */
@@ -159,7 +159,7 @@ This simply identifies the getName method and adds a comment immediately before 
 The SourceChange allows us to collect a sequence of edits and apply in one go. The offsets & lengths identify positions within the _unchanged_ file. Once a change has been applied to a file, any source ranges identified before the change are invalid and must be re-calculated.
 
 ### Add Import
-We can also add an import:
+We can also add an import to a file:
 
 ```java
 edit = new SourceChange(type.getCompilationUnit());
@@ -167,4 +167,28 @@ edit.addImport("java.util.List");
 edit.apply();
 ```
 
-After running this, an import statement appears at the top of the Person.java file.
+After running this, an import statement appears at the top of the file. The import is only added if there isn't already a matching import.
+
+### Add Field
+We can also add fields to types.
+
+```java
+var type = Find.typeByName("Person");
+var stringType = Find.typeByName("java.lang.String");
+
+edit = new SourceChange(type.getCompilationUnit());
+edit.addEdit(ChangeType.addField(type, stringType, "jobTitle"));
+edit.apply();
+```
+
+### Add Method
+We can also add new methods to a type.
+
+```java
+edit = new SourceChange(type.getCompilationUnit());
+edit.addEdit(ChangeType.addMethod(type, "\n\tpublic String getJobTitle() {\n"+
+                                          "\t\treturn this.jobTitle;\n"+
+                                          "\t}"));
+edit.apply();
+```
+

@@ -232,6 +232,12 @@ var ChangeType = {
 	    return new org.eclipse.text.edits.InsertEdit(offset, decl);
 	},
 
+    addMethod: function (toType, decl) {
+        var lastMethod = last(toType.getMethods());
+        var offset = lastMethod.getSourceRange().getOffset() + lastMethod.getSourceRange().getLength();
+        return new org.eclipse.text.edits.InsertEdit(offset, decl);
+    },
+
 	addParameterToMethod: function(method, paramType, paramName) {
 	    var params = method.getParameters();
 	    var lastParam = last(params);
@@ -249,4 +255,3 @@ var ChangeType = {
 	}
 
 };
-
