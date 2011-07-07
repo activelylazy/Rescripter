@@ -10,4 +10,5 @@ Alert.info("There are "+references.length+" references to getName()");
 /*
  * We can also search by signature
  */
-Alert.info("There are "+Search.forReferencesToMethod("com.example.Person(String)").length+" references to the constructor"); 
+references = Search.forReferencesToMethod("com.example.Person(String)");
+Alert.info("There are "+references.length+" references to the constructor"); 

@@ -72,7 +72,7 @@ Finally, we can find methods by providing their signature.
 Alert.info(type.getMethod("setName",["QString;"]).getElementName());
 ```
 
-This relies on the [IType.getMethod](http://help.eclipse.org/helios/topic/org.eclipse.jdt.doc.isv/reference/api/org/eclipse/jdt/core/IType.html#getMethod(java.lang.String, java.lang.String[]) method.
+This relies on [IType.getMethod](http://help.eclipse.org/helios/topic/org.eclipse.jdt.doc.isv/reference/api/org/eclipse/jdt/core/IType.html#getMethod(java.lang.String, java.lang.String[]).
 
 All of these approaches return [org.eclipse.jdt.core.IMethod](http://help.eclipse.org/helios/topic/org.eclipse.jdt.doc.isv/reference/api/org/eclipse/jdt/core/IMethod.html)s.
 
@@ -80,7 +80,7 @@ All of these approaches return [org.eclipse.jdt.core.IMethod](http://help.eclips
 Given a method, one thing we might want to do is find all the places where the method is used. There are two separate ways to do this. Both of which return an array of [org.eclipse.jdt.core.search.SearchMatch](http://help.eclipse.org/helios/topic/org.eclipse.jdt.doc.isv/reference/api/org/eclipse/jdt/core/search/SearchMatch.html).
 
 ### Find references to IMethod
-The first way is to search for references to the method
+The first way is to search for references to the IMethod
 
 ```java
 var type = Find.typeByName("Person");
@@ -95,7 +95,8 @@ This tells us there is 1 reference to the getName method.
 The second way is to search for a reference to method by it's signature.
 
 ```java
-Alert.info("There are "+Search.forReferencesToMethod("com.example.Person(String)").length+" references to the constructor");
+references = Search.forReferencesToMethod("com.example.Person(String)");
+Alert.info("There are "+references.length+" references to the constructor"); 
 ```
 
 ## Scanning the AST
