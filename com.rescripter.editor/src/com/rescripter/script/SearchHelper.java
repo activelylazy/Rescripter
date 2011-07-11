@@ -30,7 +30,7 @@ public class SearchHelper {
             }
         };
         
-        IJavaSearchScope scope = SearchEngine.createWorkspaceScope();
+        IJavaSearchScope scope = getScope(null);
         
         SearchEngine searchEngine = new SearchEngine();
         searchEngine.search(pattern, new SearchParticipant[] {SearchEngine.getDefaultSearchParticipant()}, scope, requestor, null);
@@ -42,7 +42,31 @@ public class SearchHelper {
         return (IType) matches.get(0).getElement();
     }
     
-    public SearchMatch[] findReferencesTo(IJavaElement element) throws CoreException {
+    public SearchMatch[] findSubClassesOf(IType type) throws CoreException {
+        final List<SearchMatch> references = new ArrayList<SearchMatch>();
+        
+        SearchPattern pattern = SearchPattern.createPattern(type, IJavaSearchConstants.SUPERTYPE_TYPE_REFERENCE);
+        if (pattern == null) {
+            // E.g. element not found / no longer exists
+            throw new NullPointerException("No pattern!?");
+        }
+        
+        SearchRequestor requestor = new SearchRequestor() {
+            @Override public void acceptSearchMatch(SearchMatch match) throws CoreException {
+                references.add(match);
+            }
+        };
+        
+        new SearchEngine().search(pattern,
+                                  new SearchParticipant[] { SearchEngine.getDefaultSearchParticipant() },
+                                  getScope(null),
+                                  requestor,
+                                  null);
+        
+        return references.toArray(new SearchMatch[]{});
+    }
+    
+    public SearchMatch[] findReferencesTo(IJavaElement element, IJavaElement withinType) throws CoreException {
         final List<SearchMatch> references = new ArrayList<SearchMatch>();
         
         SearchPattern pattern = SearchPattern.createPattern(element, IJavaSearchConstants.REFERENCES);
@@ -59,14 +83,14 @@ public class SearchHelper {
         
         new SearchEngine().search(pattern,
                                   new SearchParticipant[] { SearchEngine.getDefaultSearchParticipant() },
-                                  SearchEngine.createWorkspaceScope(),
+                                  getScope(withinType),
                                   requestor,
                                   null);
         
         return references.toArray(new SearchMatch[]{});
     }
     
-    public SearchMatch[] findMethodReferences(String methodName) throws CoreException {
+    public SearchMatch[] findMethodReferences(String methodName, IJavaElement withinType) throws CoreException {
         final List<SearchMatch> references = new ArrayList<SearchMatch>();
         
         SearchPattern pattern = SearchPattern.createPattern(methodName, 
@@ -86,11 +110,19 @@ public class SearchHelper {
         
         new SearchEngine().search(pattern,
                                   new SearchParticipant[] { SearchEngine.getDefaultSearchParticipant() },
-                                  SearchEngine.createWorkspaceScope(),
+                                  getScope(withinType),
                                   requestor,
                                   null);
         
         return references.toArray(new SearchMatch[]{});
+    }
+
+    private IJavaSearchScope getScope(IJavaElement withinType) {
+        if (withinType == null) {
+            return SearchEngine.createWorkspaceScope();
+        } else {
+            return SearchEngine.createJavaSearchScope(new IJavaElement[]{withinType});
+        }
     }
     
 }

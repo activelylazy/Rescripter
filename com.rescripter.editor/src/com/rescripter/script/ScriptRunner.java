@@ -38,6 +38,7 @@ public class ScriptRunner {
         runner.putProperty("SearchHelper", new SearchHelper());
         runner.putProperty("ChangeText", new ChangeText());
         runner.putProperty("ASTTokenFinder", new ASTTokenFinder());
+        runner.putProperty("Debug", new DebugMessage());
         
         runner.includeSystem();
         

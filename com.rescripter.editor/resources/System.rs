@@ -24,8 +24,8 @@ var Find = {
 		return matching;
 	},
 	
-	referencesTo: function(element) {
-		return SearchHelper.findReferencesTo(element);
+	referencesTo: function(element, withinType) {
+		return SearchHelper.findReferencesTo(element, withinType);
 	},
 
 	constructors: function(type) {
@@ -133,6 +133,11 @@ function SourceChange(cu) {
 		return this;
 	}
 	
+	this.delete = function(offset, length) {
+	   this.addEdit(new org.eclipse.text.edits.DeleteEdit(offset, length));
+	   return this;
+    }
+	
 	this.addImport = function(import) {
 	   if (this.imports[import] == undefined) {
 	       this.imports[import] = import;
@@ -225,10 +230,19 @@ var Refactor = {
 }
 
 var ChangeType = {
-    addField: function(toType, fieldType, fieldName) {
+    addField: function(toType, fieldTypeName, fieldName, fieldInit) {
 	    var lastField = last(toType.getFields());
-	    var offset = lastField.getSourceRange().getOffset() + lastField.getSourceRange().getLength();
-	    var decl = "\n\tprivate "+fieldType.getElementName()+" "+fieldName+";";
+	    var offset;
+	    if (lastField == null) {
+            var brace = first(filter(ScanTokens.in(toType.getCompilationUnit(), toType.getSourceRange().getOffset(), toType.getSourceRange().getLength()),
+                                     function(token) {
+                                         return token.tokenType == org.eclipse.jdt.core.compiler.ITerminalSymbols.TokenNameLBRACE;
+                                     }));
+            offset = parseInt(brace.getOffset()) + parseInt(brace.getLength());
+	    } else {
+	       offset = lastField.getSourceRange().getOffset() + lastField.getSourceRange().getLength();
+	    }
+	    var decl = "\n\tprivate "+fieldTypeName+" "+fieldName+(fieldInit == undefined ? "" : " = "+fieldInit) + ";";
 	    return new org.eclipse.text.edits.InsertEdit(offset, decl);
 	},
 
