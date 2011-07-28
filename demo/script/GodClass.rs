@@ -21,7 +21,7 @@ function moveMethodBetweenInjectables(fromMethod, toType) {
 	   if(field == undefined) {
 		   var newFieldName = initLowerCase(toType.getElementName());
 	       edit.changeFile(refType.getCompilationUnit())
-	           .addEdit(ChangeType.addField(refType, toType, newFieldName))
+	           .addEdit(ChangeType.addField(refType, toType.getElementName(), newFieldName))
 	           .addImport(toType.getFullyQualifiedName());
 	           
 	       foreach(findInjectableConstructors(refType), function(constructor){
