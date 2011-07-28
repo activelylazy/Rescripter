@@ -2,7 +2,7 @@
 <feature
       id="com.rescripter"
       label="com.rescripter"
-      version="1.0.4">
+      version="1.0.5">
 
    <description url="http://rescripter.com">
       Editor and execution environment to run JavaScript that can modify Java source code
@@ -1704,7 +1704,7 @@ Public License instead of this License.  But first, please read
          id="com.rescripter.editor"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.5"
          unpack="false"/>
 
 </feature>
