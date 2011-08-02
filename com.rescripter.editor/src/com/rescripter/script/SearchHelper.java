@@ -66,6 +66,10 @@ public class SearchHelper {
         return references.toArray(new SearchMatch[]{});
     }
     
+    public SearchMatch[] findReferencesTo(IJavaElement element) throws CoreException {
+    	return findReferencesTo(element, null);
+    }
+    
     public SearchMatch[] findReferencesTo(IJavaElement element, IJavaElement withinType) throws CoreException {
         final List<SearchMatch> references = new ArrayList<SearchMatch>();
         
@@ -88,6 +92,10 @@ public class SearchHelper {
                                   null);
         
         return references.toArray(new SearchMatch[]{});
+    }
+    
+    public SearchMatch[] findMethodReferences(String methodName) throws CoreException {
+    	return findMethodReferences(methodName, null);
     }
     
     public SearchMatch[] findMethodReferences(String methodName, IJavaElement withinType) throws CoreException {

@@ -24,7 +24,11 @@ var Find = {
 		return matching;
 	},
 	
-	referencesTo: function(element, withinType) {
+	referencesTo: function(element) {
+	   return SearchHelper.findReferencesTo(element);
+	},
+	
+	referencesWithinType: function(element, withinType) {
 		return SearchHelper.findReferencesTo(element, withinType);
 	},
 
