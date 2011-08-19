@@ -121,7 +121,20 @@ function SourceChange(cu) {
 	};
 	
 	this.addEdit = function(textedit) {
-        if (textedit != undefined) {	   
+        if (textedit != undefined) {
+            var newStart = textedit.getOffset();
+            var newEnd = textedit.getOffset() + textedit.getLength();
+            foreach(this.textEdit.getChildren(),function(child) {
+                var existingStart = child.getOffset();
+                var existingEnd = child.getOffset() + child.getLength();
+                
+                if (existingEnd > newStart && existingStart < newEnd) {
+                    Debug.message("[ERROR] Overlapping text edit");
+                    Debug.message("    New edit "+textedit);
+                    Debug.message("    Overlaps with "+child);
+                    throw "Attempt to add overlapping text edit";
+                }                
+            });	   
 		    this.textEdit.addChild(textedit);
 		}
 		return this;
@@ -216,9 +229,9 @@ var Refactor = {
                 var packageDecl = cu.getPackageDeclarations()[0];
                 offset = packageDecl.getSourceRange().getOffset() + packageDecl.getSourceRange().getLength();
             } else {
-                offset = lastImport.getSourceRange().getOffset() + lastImport.getSourceRange().getLength();
+                offset = lastImport.getSourceRange().getOffset();
             }
-            return new org.eclipse.text.edits.InsertEdit(offset, "\nimport "+text+";");
+            return new org.eclipse.text.edits.InsertEdit(offset, "import "+text+";\n");
         }
     },
 
@@ -235,7 +248,7 @@ var Refactor = {
 
 var ChangeType = {
     addField: function(toType, fieldTypeName, fieldName, fieldInit) {
-	    var lastField = last(toType.getFields());
+	    var lastField = first(toType.getFields());
 	    var offset;
 	    if (lastField == null) {
             var brace = first(filter(ScanTokens.in(toType.getCompilationUnit(), toType.getSourceRange().getOffset(), toType.getSourceRange().getLength()),
