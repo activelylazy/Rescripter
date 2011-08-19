@@ -124,18 +124,26 @@ function SourceChange(cu) {
         if (textedit != undefined) {
             var newStart = textedit.getOffset();
             var newEnd = textedit.getOffset() + textedit.getLength();
+            var isDuplicate = false;
             foreach(this.textEdit.getChildren(),function(child) {
                 var existingStart = child.getOffset();
                 var existingEnd = child.getOffset() + child.getLength();
                 
+                if (existingEnd == newEnd && existingStart == newStart && newEnd > newStart && textedit.getClass().getName() == child.getClass().getName()) {
+                    Debug.message("[WARN] Duplicate text edit "+textedit);
+                    isDuplicate = true;
+                    return;
+                }
                 if (existingEnd > newStart && existingStart < newEnd) {
                     Debug.message("[ERROR] Overlapping text edit");
                     Debug.message("    New edit "+textedit);
                     Debug.message("    Overlaps with "+child);
                     throw "Attempt to add overlapping text edit";
                 }                
-            });	   
-		    this.textEdit.addChild(textedit);
+            });
+            if (!isDuplicate) {	   
+		        this.textEdit.addChild(textedit);
+		    }
 		}
 		return this;
 	}
