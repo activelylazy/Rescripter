@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
@@ -16,13 +17,17 @@ public class ScriptRunner {
 
     private Context context;
     private Scriptable scope;
+    private ScriptLoader scriptLoader;
 
     ScriptRunner() {
         context = Context.enter();
         scope = context.initStandardObjects();
+        scriptLoader = new ScriptLoader(this);
+        putProperty("Load", scriptLoader);
     }
 
-    public void run(String source, String sourceName) {
+    public void run(String source, String sourceName, IFile location) {
+        scriptLoader.setCurrentLocation(location);
         context.evaluateString(scope, source, sourceName, 1, null);
     }
     
@@ -56,6 +61,6 @@ public class ScriptRunner {
     	} finally {
     		in.close();
     	}
-    	run(buff.toString(),"System.rs");
+    	run(buff.toString(), "System.rs", null);
     }
 }

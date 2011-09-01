@@ -19,7 +19,7 @@ public class ScriptRunnerTest {
         ScriptRunner runner = new ScriptRunner();
         CheckCalled stuff = new CheckCalled();
         runner.putProperty("test",stuff);
-        runner.run("test.call()","test source");
+        runner.run("test.call()","test source",null);
 
         assertTrue(stuff.called);
     }
