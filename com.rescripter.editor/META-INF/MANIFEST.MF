@@ -9,11 +9,10 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text,
  org.eclipse.ui.editors,
  org.eclipse.core.resources;bundle-version="3.6.1",
- org.junit,
  org.eclipse.jdt.core;bundle-version="3.6.2",
  org.eclipse.ui.ide;bundle-version="3.6.2"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Bundle-ClassPath: lib/js.jar,
+Bundle-ClassPath: lib/rhino-1.7R2.jar,
  .,
  resources/
