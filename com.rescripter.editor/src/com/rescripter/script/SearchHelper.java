@@ -25,7 +25,7 @@ public class SearchHelper {
         final List<SearchMatch> matches = new ArrayList<SearchMatch>();
         
         SearchRequestor requestor = new SearchRequestor() {
-            @Override public void acceptSearchMatch(SearchMatch match) throws CoreException {
+            @Override public void acceptSearchMatch(SearchMatch match) {
                 matches.add(match);
             }
         };
@@ -52,7 +52,7 @@ public class SearchHelper {
         }
         
         SearchRequestor requestor = new SearchRequestor() {
-            @Override public void acceptSearchMatch(SearchMatch match) throws CoreException {
+            @Override public void acceptSearchMatch(SearchMatch match) {
                 references.add(match);
             }
         };
@@ -80,7 +80,7 @@ public class SearchHelper {
         }
         
         SearchRequestor requestor = new SearchRequestor() {
-            @Override public void acceptSearchMatch(SearchMatch match) throws CoreException {
+            @Override public void acceptSearchMatch(SearchMatch match) {
                 references.add(match);
             }
         };
@@ -111,7 +111,7 @@ public class SearchHelper {
         }
         
         SearchRequestor requestor = new SearchRequestor() {
-            @Override public void acceptSearchMatch(SearchMatch match) throws CoreException {
+            @Override public void acceptSearchMatch(SearchMatch match) {
                 references.add(match);
             }
         };
@@ -128,9 +128,8 @@ public class SearchHelper {
     private IJavaSearchScope getScope(IJavaElement withinType) {
         if (withinType == null) {
             return SearchEngine.createWorkspaceScope();
-        } else {
-            return SearchEngine.createJavaSearchScope(new IJavaElement[]{withinType});
         }
+		return SearchEngine.createJavaSearchScope(new IJavaElement[]{withinType});
     }
     
 }

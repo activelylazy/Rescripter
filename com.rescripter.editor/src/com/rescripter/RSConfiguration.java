@@ -18,11 +18,13 @@ public class RSConfiguration extends SourceViewerConfiguration {
 	public RSConfiguration(ColorManager colorManager) {
 		this.colorManager = colorManager;
 	}
+	@Override
 	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
 		return new String[] {
 			IDocument.DEFAULT_CONTENT_TYPE,
 			RSPartitionScanner.COMMENT};
 	}
+	@Override
 	public ITextDoubleClickStrategy getDoubleClickStrategy(
 		ISourceViewer sourceViewer,
 		String contentType) {
@@ -42,6 +44,7 @@ public class RSConfiguration extends SourceViewerConfiguration {
 		return scanner;
 	}
 
+	@Override
 	public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
 		PresentationReconciler reconciler = new PresentationReconciler();
 
