@@ -7,8 +7,11 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.hamcrest.Description;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
+import org.jmock.api.Action;
+import org.jmock.api.Invocation;
 
 public class MockFileBuilder {
 	private Mockery context = new Mockery();
@@ -36,6 +39,30 @@ public class MockFileBuilder {
 		return this;
 	}
 	
+	public IFile build() {
+		final IFile file = context.mock(IFile.class);
+		try {
+			context.checking(new Expectations() {{
+				allowing(file).exists(); will(returnValue(exists));
+				allowing(file).getContents(); will(returnValue(new ByteArrayInputStream(contents.getBytes())));
+				allowing(file).getParent(); will(returnValue(container));
+				allowing(file).getFullPath(); will(new Action() {
+					public Object invoke(Invocation invocation) throws Throwable {
+						return new Path(getFullPath());
+					}
+					
+					public void describeTo(Description description) {
+						description.appendText("return the full path");
+					}
+				});
+				allowing(file).getLocation(); will(returnValue(path));
+			}});
+		} catch (CoreException e) {
+			// Nonsensical exception, we're declaring expectations
+		}
+		return file;
+	}
+	
 	MockFileBuilder in_container(IContainer container) {
 		this.container = container;
 		return this;
@@ -45,19 +72,10 @@ public class MockFileBuilder {
 		return this.path;
 	}
 	
-	public IFile build() {
-		final IFile file = context.mock(IFile.class);
-		try {
-			context.checking(new Expectations() {{
-				allowing(file).exists(); will(returnValue(exists));
-				allowing(file).getContents(); will(returnValue(new ByteArrayInputStream(contents.getBytes())));
-				allowing(file).getParent(); will(returnValue(container));
-				allowing(file).getFullPath(); will(returnValue(path));
-			}});
-		} catch (CoreException e) {
-			// Nonsensical exception, we're declaring expectations
-		}
-		return file;
+	String getFullPath() {
+		return container.getFullPath() == null 
+				? path.toString()
+				: container.getFullPath() + "/" + path.toString();
 	}
 	
 }
