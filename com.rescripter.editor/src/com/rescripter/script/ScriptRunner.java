@@ -23,10 +23,9 @@ public class ScriptRunner {
     ScriptRunner() {
         context = Context.enter();
         scope = context.initStandardObjects();
-        scriptLoader = new ScriptLoader(this);
-        putProperty("Load", scriptLoader);
-        debugMessage = new DebugMessage();
-		putProperty("Debug", debugMessage);
+        putProperty("Load", scriptLoader = new ScriptLoader(this));
+		putProperty("Debug", debugMessage = new DebugMessage());
+		putProperty("TestResult", new TestResultPublisher());
     }
     
     public void run(String source, String sourceName, IFile location) {

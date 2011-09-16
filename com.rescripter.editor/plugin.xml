@@ -102,6 +102,21 @@
              sequence="M1+R S">
        </key>
     </extension>
+    <extension
+          point="org.eclipse.ui.views">
+       <view
+             category="com.rescripter.views"
+             class="com.rescripter.views.TestResultView"
+             icon="icons/sample.gif"
+             id="com.rescripter.views.testresultview"
+             name="Test Result View"
+             restorable="true">
+       </view>
+       <category
+             id="com.rescripter.views"
+             name="Rescripter">
+       </category>
+    </extension>
     
        
 </plugin>

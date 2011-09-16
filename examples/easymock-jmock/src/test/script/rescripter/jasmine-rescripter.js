@@ -3,11 +3,14 @@ function runJasmine() {
 	var jasmineEnv = jasmine.getEnv();
 	jasmineEnv.updateInterval = 1000;
 	var trivialReporter = new RescripterReporter();
+	TestResult.startTest();
 	jasmineEnv.addReporter(trivialReporter);
 	jasmineEnv.execute();
 	while(!trivialReporter.finished) {
-	    java.lang.Thread.sleep(1000);
+		TestResult.updateResults();
+	    java.lang.Thread.sleep(500);
 	}
+	TestResult.updateResults();
 	
 	if (trivialReporter.failed) {
 		Debug.message("Messages are: "+trivialReporter.messages);
@@ -50,6 +53,7 @@ function RescripterReporter() {
         if (this.failed) {
         	this.messages.push(spec.suite.description+" "+spec.description+": "+this.collateFailures(spec));	
         }
+        TestResult.queueResult(spec.suite.description, spec.description, this.collateFailures(spec));
     };
     
     this.log = function(msg) {
