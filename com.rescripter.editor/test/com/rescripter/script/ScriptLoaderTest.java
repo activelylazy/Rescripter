@@ -111,4 +111,45 @@ public class ScriptLoaderTest {
 		
 		context.assertIsSatisfied();
 	}
+	
+	@Test public void
+	loads_multiple_files() throws IOException, CoreException {
+		final ScriptRunner runner = context.mock(ScriptRunner.class);
+		
+		final String currentFile = "current_file.js";
+		
+		final String fullPathToFirstFile = "/some/file.js";
+		final String firstFile = "some/file.js";
+		final String firstContents = "I am your father\n";
+		
+		final String fullPathToSecondFile = "/another/utility.js";
+		final String secondFile = "another/utility.js";
+		final String secondContents = "nothing to see here\n";
+		
+		final IContainer currentDirectory = a_container()
+												.containing_the_file(a_file_at(new Path(currentFile)))
+												.containing(
+													a_container("some")
+														.containing_the_file(a_file_at(new Path("file.js"))
+																.with_contents(firstContents)))
+												.containing(
+													a_container("another")
+														.containing_the_file(a_file_at(new Path("utility.js"))
+															.with_contents(secondContents)))
+												.build();
+
+		final ScriptLoader loader = new ScriptLoader(runner);
+		
+		context.checking(new Expectations() {{
+			oneOf(runner).run(firstContents, fullPathToFirstFile, currentDirectory.getFile(new Path(firstFile)));
+			oneOf(runner).run(secondContents, fullPathToSecondFile, currentDirectory.getFile(new Path(secondFile)));
+		}});
+		
+		loader.setCurrentLocation(currentDirectory.getFile(new Path("current_file.js")));
+		loader.file(firstFile);
+		loader.file(secondFile);
+		
+		context.assertIsSatisfied();
+	}
+	
 }
