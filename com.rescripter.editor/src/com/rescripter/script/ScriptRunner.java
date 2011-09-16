@@ -15,23 +15,20 @@ import com.rescripter.syntax.ChangeText;
 
 public class ScriptRunner {
 
-    private Context context;
-    private Scriptable scope;
-    private ScriptLoader scriptLoader;
+    private final Context context;
+    private final Scriptable scope;
+    private final ScriptLoader scriptLoader;
+	private final DebugMessage debugMessage;
 
     ScriptRunner() {
         context = Context.enter();
         scope = context.initStandardObjects();
         scriptLoader = new ScriptLoader(this);
         putProperty("Load", scriptLoader);
+        debugMessage = new DebugMessage();
+		putProperty("Debug", debugMessage);
     }
     
-    public ScriptRunner(Context context, Scriptable scope, ScriptLoader scriptLoader) {
-		this.context = context;
-		this.scope = scope;
-		this.scriptLoader = scriptLoader;
-    }
-
     public void run(String source, String sourceName, IFile location) {
         scriptLoader.setCurrentLocation(location);
         context.evaluateString(scope, source, sourceName, 1, null);
@@ -53,7 +50,6 @@ public class ScriptRunner {
         runner.putProperty("SearchHelper", new SearchHelper());
         runner.putProperty("ChangeText", new ChangeText());
         runner.putProperty("ASTTokenFinder", new ASTTokenFinder());
-        runner.putProperty("Debug", new DebugMessage());
         
         runner.includeSystem();
         
@@ -73,4 +69,8 @@ public class ScriptRunner {
     	}
     	run(buff.toString(), "System.rs", null);
     }
+
+	public void done() {
+		debugMessage.done();
+	}
 }
