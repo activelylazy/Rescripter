@@ -1,72 +1,71 @@
 
-var Find = {
-	typeByName: function(name) {
-		return SearchHelper.findTypeByName(name);
-	},
+var Find = function() {
+}
+
+Find.typeByName = function(name) {
+	return SearchHelper.findTypeByName(name);
+}
 	
-	methodByName: function(type, methodName) {
-		var methods = type.getMethods();
-		for (var i=0; i<methods.length; i++) {
-			if (methods[i].getElementName() == methodName) {
-				return methods[i];
-			}
+Find.methodByName = function(type, methodName) {
+	var methods = type.getMethods();
+	for (var i=0; i<methods.length; i++) {
+		if (methods[i].getElementName() == methodName) {
+			return methods[i];
 		}
-	},
-	
-	methodsByName: function(type, methodName) {
-		var methods = type.getMethods();
-		var matching = [];
-		for (var i=0; i<methods.length; i++) {
-			if (methods[i].getElementName() == methodName) {
-				matching.push(methods[i]);
-			}
+	}
+}
+
+Find.methodsByName = function(type, methodName) {
+	var methods = type.getMethods();
+	var matching = [];
+	for (var i=0; i<methods.length; i++) {
+		if (methods[i].getElementName() == methodName) {
+			matching.push(methods[i]);
 		}
-		return matching;
-	},
-	
-	referencesTo: function(element) {
-	   return SearchHelper.findReferencesTo(element);
-	},
-	
-	referencesWithinType: function(element, withinType) {
-		return SearchHelper.findReferencesTo(element, withinType);
-	},
-
-	constructors: function(type) {
-		return Find.methodsByName(type, type.getElementName());
-	},
-	
-	fieldOfType: function (container, fieldType) {
-	    var fields = container.getFields();
-	    for(var i=0; i<fields.length; i++) {
-	        if (org.eclipse.jdt.core.Signature.toString(fields[i].getTypeSignature()) == fieldType.getElementName()) {
-	            return fields[i];
-	        }
-	    }
 	}
+	return matching;
+}
 
-};
+Find.referencesTo = function(element) {
+   return SearchHelper.findReferencesTo(element);
+}
 
-var Search = {
-    forReferencesToMethod: function(signature) {
-        return SearchHelper.findMethodReferences(signature)
-    },
-    
-    onlySourceMatches: function (match) {
-	    if (match.getElement().getClass().isAssignableFrom(org.eclipse.jdt.internal.core.ResolvedSourceMethod)) {
-	        return true;
-	    } else if (match.getElement().getClass().isAssignableFrom(org.eclipse.jdt.internal.core.ResolvedSourceField)) {
-	        return true;
-	    } else if (match.getElement().getClass().isAssignableFrom(org.eclipse.jdt.internal.core.Initializer)) {
-	        return true;
-	    } else if (match.getElement().getClass().isAssignableFrom(org.eclipse.jdt.internal.core.ResolvedBinaryMethod)) {
-	        return false;
-	    } else {
-	        throw "Unexpected class "+match.getElement().getClass();
-	    }
-	}
-    
-};
+Find.referencesWithinType = function(element, withinType) {
+	return SearchHelper.findReferencesTo(element, withinType);
+}
+
+Find.constructors = function(type) {
+	return Find.methodsByName(type, type.getElementName());
+}
+
+Find.fieldOfType = function (container, fieldType) {
+    var fields = container.getFields();
+    for(var i=0; i<fields.length; i++) {
+        if (org.eclipse.jdt.core.Signature.toString(fields[i].getTypeSignature()) == fieldType.getElementName()) {
+            return fields[i];
+        }
+    }
+}
+
+var Search = function() { };
+
+Search.forReferencesToMethod = function(signature) {
+    return SearchHelper.findMethodReferences(signature)
+}
+
+Search.onlySourceMatches = function (match) {
+    if (match.getElement().getClass().isAssignableFrom(org.eclipse.jdt.internal.core.ResolvedSourceMethod)) {
+        return true;
+    } else if (match.getElement().getClass().isAssignableFrom(org.eclipse.jdt.internal.core.ResolvedSourceField)) {
+        return true;
+    } else if (match.getElement().getClass().isAssignableFrom(org.eclipse.jdt.internal.core.Initializer)) {
+        return true;
+    } else if (match.getElement().getClass().isAssignableFrom(org.eclipse.jdt.internal.core.ResolvedBinaryMethod)) {
+        return false;
+    } else {
+        throw "Unexpected class "+match.getElement().getClass();
+    }
+}
 
 function Token(cu, tokenType, offset, length) {
 	this.cu = cu;
