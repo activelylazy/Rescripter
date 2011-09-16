@@ -1,0 +1,10 @@
+
+This is an example project with EasyMock tests to be converted into JMock by Rescripter.
+
+Use maven to build & run tests
+	mvn test
+	
+To generate Eclispe artifacts:
+	mvn eclipse:eclipse
+	
+
