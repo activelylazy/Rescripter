@@ -4,16 +4,12 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IFileEditorMapping;
-import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.eclipse.ui.internal.editors.text.FileEditorInputAdapterFactory;
 import org.eclipse.ui.part.FileEditorInput;
 
 import com.rescripter.script.Alerter;
