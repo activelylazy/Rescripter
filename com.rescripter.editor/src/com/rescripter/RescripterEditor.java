@@ -12,6 +12,7 @@ public class RescripterEditor extends TextEditor {
 		setSourceViewerConfiguration(new RSConfiguration(colorManager));
 		setDocumentProvider(new RSDocumentProvider());
 	}
+	@Override
 	public void dispose() {
 		colorManager.dispose();
 		super.dispose();
