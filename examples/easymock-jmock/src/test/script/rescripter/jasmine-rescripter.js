@@ -35,10 +35,20 @@ function RescripterReporter() {
     this.reportSpecStarting = function(spec) {
     };
     
+    this.collateFailures = function(spec) {
+    	var messages = [];
+    	foreach(spec.results().getItems(), function(item) {
+    		if (item != "Passed.") {
+    			messages.push(item); 
+    		}
+    	});
+    	return messages.join(", ");
+    }
+    
     this.reportSpecResults = function(spec) {
         this.failed = this.failed || spec.results().failedCount > 0
         if (this.failed) {
-        	this.messages.push(spec.suite.description+" "+spec.description+": "+spec.results().getItems());	
+        	this.messages.push(spec.suite.description+" "+spec.description+": "+this.collateFailures(spec));	
         }
     };
     
