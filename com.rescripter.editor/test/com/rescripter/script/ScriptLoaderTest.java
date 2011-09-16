@@ -1,11 +1,16 @@
 package com.rescripter.script;
 
+import static com.rescripter.script.ScriptLoaderTest.MockContainerBuilder.a_container;
+import static com.rescripter.script.ScriptLoaderTest.MockFileBuilder.a_file_at;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Map;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -23,26 +28,24 @@ public class ScriptLoaderTest {
 	@Test public void 
 	loads_and_runs_a_single_script() throws IOException, CoreException {
 		final ScriptRunner runner = context.mock(ScriptRunner.class);
-		final IContainer currentDirectory = context.mock(IContainer.class);
-		final IFile currentLocation = context.mock(IFile.class, "currentLocation");
-		final String someFileJSFilename = "some/file.js";
-		final IFile someFileJS = context.mock(IFile.class, "someFileJS");
+		
+		final String currentFile = "current_file.js";
+		final String someFile = "some_file.js";
 		final String source = "the source, Luke\n";
 		
+		final IContainer currentDirectory = a_container()
+												.containing_the_file(a_file_at(new Path(currentFile)))
+												.containing_the_file(a_file_at(new Path(someFile))
+																		.with_contents(source))
+												.build();
+		
 		context.checking(new Expectations() {{
-			oneOf(currentLocation).getParent(); will(returnValue(currentDirectory));
-			oneOf(currentDirectory).getFile(with(PathMatcher.a_path_matching(someFileJSFilename))); will(returnValue(someFileJS));
-			oneOf(someFileJS).exists(); will(returnValue(true));
-			oneOf(someFileJS).getContents(); will(returnValue(new ByteArrayInputStream(source.getBytes())));
-			oneOf(someFileJS).getFullPath(); will(returnValue(new Path(someFileJSFilename)));
-			
-			oneOf(runner).run(source, someFileJSFilename, someFileJS);
+			oneOf(runner).run(with(source), with(someFile), with(currentDirectory.getFile(new Path(someFile))));
 		}});
 		
 		ScriptLoader loader = new ScriptLoader(runner);
-		loader.setCurrentLocation(currentLocation);
-		
-		loader.file(someFileJSFilename);
+		loader.setCurrentLocation(currentDirectory.getFile(new Path(currentFile)));
+		loader.file(someFile);
 		
 		context.assertIsSatisfied();
 	}
@@ -113,5 +116,81 @@ public class ScriptLoaderTest {
 		loader.file(parentFilename);
 		
 		context.assertIsSatisfied();
+	}
+	
+	public static class MockContainerBuilder {
+		private Mockery context = new Mockery();
+		private IContainer container = context.mock(IContainer.class);
+		
+		private MockContainerBuilder() { }
+		
+		public static MockContainerBuilder a_container() {
+			return new MockContainerBuilder();
+		}
+		
+		public MockContainerBuilder containing_the_file(final MockFileBuilder file) {
+			file.in_container(container);
+			context.checking(new Expectations() {{
+				allowing(container).getFile(file.getPath()); will(returnValue(file.build()));
+			}});
+			return this;
+		}
+		
+		public IContainer build() {
+			return container;
+		}
+		
+	}
+	
+	public static class MockFileBuilder {
+		private Mockery context = new Mockery();
+		
+		private final IPath path;
+		private boolean exists = true;
+		private String contents = "";
+		private IContainer container = null;
+		
+		private MockFileBuilder(Path path) {
+			this.path = path;
+		}
+		
+		public static MockFileBuilder a_file_at(Path path) {
+			return new MockFileBuilder(path);
+		}
+		
+		public MockFileBuilder that_does_not_exist() {
+			this.exists = false;
+			return this;
+		}
+		
+		public MockFileBuilder with_contents(String contents) {
+			this.contents = contents;
+			return this;
+		}
+		
+		MockFileBuilder in_container(IContainer container) {
+			this.container = container;
+			return this;
+		}
+		
+		IPath getPath() {
+			return this.path;
+		}
+		
+		public IFile build() {
+			final IFile file = context.mock(IFile.class);
+			try {
+				context.checking(new Expectations() {{
+					allowing(file).exists(); will(returnValue(exists));
+					allowing(file).getContents(); will(returnValue(new ByteArrayInputStream(contents.getBytes())));
+					allowing(file).getParent(); will(returnValue(container));
+					allowing(file).getFullPath(); will(returnValue(path));
+				}});
+			} catch (CoreException e) {
+				// Nonsensical exception, we're declaring expectations
+			}
+			return file;
+		}
+		
 	}
 }
