@@ -23,4 +23,5 @@ public class ScriptRunnerTest {
 
         assertTrue(stuff.called);
     }
+    
 }

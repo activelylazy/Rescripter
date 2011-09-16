@@ -35,7 +35,10 @@ public class ScriptLoader {
         } finally {
             in.close();
         }
+        IFile lastLocation = location;
+        this.location = file;
         scriptRunner.run(buff.toString(), file.getFullPath().toOSString(), file);
+        this.location = lastLocation;
     }
 
     public void setCurrentLocation(IFile location) {

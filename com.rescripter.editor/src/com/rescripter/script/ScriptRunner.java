@@ -25,6 +25,12 @@ public class ScriptRunner {
         scriptLoader = new ScriptLoader(this);
         putProperty("Load", scriptLoader);
     }
+    
+    public ScriptRunner(Context context, Scriptable scope, ScriptLoader scriptLoader) {
+		this.context = context;
+		this.scope = scope;
+		this.scriptLoader = scriptLoader;
+    }
 
     public void run(String source, String sourceName, IFile location) {
         scriptLoader.setCurrentLocation(location);
@@ -33,6 +39,10 @@ public class ScriptRunner {
     
     public void putProperty(String name, Object object) {
         ScriptableObject.putProperty(scope, name, object);
+    }
+    
+    public static ScriptRunner createBasicScriptRunner() {
+    	return new ScriptRunner();
     }
     
     public static ScriptRunner createJavaSyntaxScriptRunner(IWorkbenchWindow window) throws IOException {
