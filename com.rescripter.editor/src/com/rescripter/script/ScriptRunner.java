@@ -19,7 +19,7 @@ public class ScriptRunner {
     private Scriptable scope;
     private ScriptLoader scriptLoader;
 
-    ScriptRunner() {
+    public ScriptRunner() {
         context = Context.enter();
         scope = context.initStandardObjects();
         scriptLoader = new ScriptLoader(this);
