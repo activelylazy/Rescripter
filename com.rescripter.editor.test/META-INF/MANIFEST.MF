@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: RescripterEditorTests
+Bundle-SymbolicName: com.rescripter.editor.test;singleton:=true
+Bundle-Version: 1.0.7.qualifier
+Require-Bundle: org.junit,
+ com.rescripter.editor,
+ org.eclipse.core.resources
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ClassPath: .
