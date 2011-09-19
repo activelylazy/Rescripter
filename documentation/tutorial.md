@@ -52,6 +52,7 @@ This will popup a message box with the fully qualified name of the class named P
 
 ### Finding sub-classes
 To find sub-classes of Person you could use:
+
 ```java
 var person = Find.typeByName("Person");
 var references = SearchHelper.findSubClassesOf(person);
