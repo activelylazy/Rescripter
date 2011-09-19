@@ -5,7 +5,8 @@ The Find class contains various helper methods for finding types and methods.
 
 # typeByName(name)
 *Find a Java type by class name*
-+ name is either the fully qualified name (com.example.PersonFactory) or just the class name (PersonBuilder)
+
+* name is either the fully qualified name (com.example.PersonFactory) or just the class name (PersonBuilder)
 
 Returns an IType, or *undefined* if there is no such type.
 
