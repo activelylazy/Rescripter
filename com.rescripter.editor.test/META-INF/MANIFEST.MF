@@ -3,9 +3,12 @@ Bundle-ManifestVersion: 2
 Bundle-Name: RescripterEditorTests
 Bundle-SymbolicName: com.rescripter.editor.test;singleton:=true
 Bundle-Version: 1.0.7.qualifier
-Require-Bundle: org.junit,
+Require-Bundle: com.rescripter.jmock,
  com.rescripter.editor,
- org.eclipse.core.resources
+ org.eclipse.core.resources,
+ org.eclipse.core.runtime,
+ org.junit
+Comment: org.junit must be after jmock, so Hamcrest 1.2 is used instead of 1.1 which comes with JUnit.
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: .

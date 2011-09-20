@@ -137,6 +137,7 @@
     </profiles>
 
     <modules>
+        <module>com.rescripter.jmock</module>
         <module>com.rescripter.editor</module>
         <module>com.rescripter.editor.test</module>
     </modules>
