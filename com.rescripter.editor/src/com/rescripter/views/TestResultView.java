@@ -11,7 +11,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
-import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
 
@@ -22,7 +21,7 @@ public class TestResultView extends ViewPart {
 	private Composite panel;
 	
 	private Map<String, String> messages = new HashMap<String, String>();
-	private ProgressBar progress;
+	private TestProgressBar progress;
 	
 	@Override
 	public void createPartControl(Composite parent) {
@@ -38,10 +37,11 @@ public class TestResultView extends ViewPart {
 		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
 		label.setLayoutData(gridData);
 		
-		progress = new ProgressBar(panel, SWT.HORIZONTAL);
+		progress = new TestProgressBar(panel);
 		progress.setMaximum(0);
-		progress.setSelection(0);
+		progress.setCurrent(0);
 		gridData = new GridData(GridData.FILL_HORIZONTAL);
+		gridData.heightHint = 20;
 		progress.setLayoutData(gridData);
 
 		testList = new List(panel, SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL);
@@ -86,12 +86,14 @@ public class TestResultView extends ViewPart {
 	public void startTest(int numSpecs) {
 		testList.removeAll();
 		progress.setMaximum(numSpecs);
-		progress.setSelection(0);
+		progress.setCurrent(0);
+		progress.setSuccess(true);
 		panel.redraw();
 	}
 	
-	public void updateProgress(int numCompleted) {
-		progress.setSelection(numCompleted);
+	public void updateProgress(int numCompleted, int numErrors) {
+		progress.setCurrent(numCompleted);
+		progress.setSuccess(numErrors == 0);
 	}
 
 	public void reportResult(String suite, String spec, String message) {

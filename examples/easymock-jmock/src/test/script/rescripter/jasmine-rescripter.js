@@ -49,7 +49,7 @@ function RescripterReporter() {
         if (this.failed) {
         	this.messages.push(spec.suite.description+" "+spec.description+": "+this.collateFailures(spec));	
         }
-        TestResult.queueResult(spec.suite.description, spec.description, this.collateFailures(spec));
+        TestResult.queueResult(spec.suite.description, spec.description, this.collateFailures(spec), ! this.failed);
     };
     
     this.log = function(msg) {
