@@ -13,22 +13,7 @@ public class TestResultPublisher {
 	private int numSpecsStarted = 0;
 	private int numSpecsInError = 0;
 	
-	private static class Result {
-		String suite;
-		String spec;
-		String message;
-		boolean success;
-		
-		public Result(String suite, String spec, String message, boolean success) {
-			super();
-			this.suite = suite;
-			this.spec = spec;
-			this.message = message;
-			this.success = success;
-		}
-	}
-	
-	private List<Result> results = new ArrayList<Result>();
+	private List<TestResult> results = new ArrayList<TestResult>();
 
 	public synchronized void startTest(int numSpecs) throws PartInitException {
 		results.clear();
@@ -42,13 +27,13 @@ public class TestResultPublisher {
 	}
 	
 	public synchronized void queueResult(String suite, String spec, String message, boolean success) {
-		results.add(new Result(suite, spec, message, success));
+		results.add(new TestResult(suite, spec, message, success));
 	}
 	
 	public synchronized void updateResults() throws PartInitException {
-		for(Result result : results) {
-			getTestResultView().reportResult(result.suite, result.spec, result.message);
-			if (!result.success) {
+		for(TestResult result : results) {
+			getTestResultView().reportResult(result);
+			if (!result.isSuccess()) {
 				numSpecsInError++;
 			}
 		}

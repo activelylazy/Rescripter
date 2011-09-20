@@ -1,27 +1,31 @@
 package com.rescripter.views;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
 
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.ITreeSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
+
+import com.rescripter.script.TestResult;
 
 public class TestResultView extends ViewPart {
 
 	private Text text;
-	private List testList;
 	private Composite panel;
-	
-	private Map<String, String> messages = new HashMap<String, String>();
 	private TestProgressBar progress;
+	
+	private java.util.List<TestResult> testResultList;
+	private TreeViewer treeViewer;
 	
 	@Override
 	public void createPartControl(Composite parent) {
@@ -44,9 +48,49 @@ public class TestResultView extends ViewPart {
 		gridData.heightHint = 20;
 		progress.setLayoutData(gridData);
 
-		testList = new List(panel, SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL);
+		testResultList = new ArrayList<TestResult>();
+		
+		treeViewer = new TreeViewer(panel);
 		gridData = new GridData(GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL) ;
-		testList.setLayoutData(gridData);
+		treeViewer.getTree().setLayoutData(gridData);
+		
+		treeViewer.setContentProvider(new ITreeContentProvider() {
+			
+			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+			}
+			
+			public void dispose() { }
+			
+			public boolean hasChildren(Object element) {
+				return false;
+			}
+			
+			public Object getParent(Object element) {
+				return null;
+			}
+			
+			public Object[] getElements(Object inputElement) {
+				return testResultList.toArray();
+			}
+			
+			public Object[] getChildren(Object parentElement) {
+				return new Object[0];
+			}
+		});
+		treeViewer.setLabelProvider(new TestResultLabelProvider());
+		treeViewer.setInput("root");
+		treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			
+			public void selectionChanged(SelectionChangedEvent event) {
+				ITreeSelection selection = (ITreeSelection) treeViewer.getSelection();
+				TestResult testResult = (TestResult) selection.getFirstElement();
+				if (testResult == null) {
+					text.setText("");
+					return;
+				}
+				text.setText(testResult.getMessage());
+			}
+		});
 		
 		label = new Label(panel, 0);
 		label.setText("Details");
@@ -57,34 +101,14 @@ public class TestResultView extends ViewPart {
 		text.setText("");
 		gridData = new GridData(GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL) ;
 		text.setLayoutData(gridData);
-		
-		hookClickAction();
 	}
 	
-	private String getMessage(String key) {
-		return messages.get(key);
-	}
-	
-	private void hookClickAction() {
-		testList.addSelectionListener(new SelectionListener() {
-			
-			public void widgetSelected(SelectionEvent e) {
-				text.setText(getMessage(testList.getSelection()[0]));
-			}
-			
-			public void widgetDefaultSelected(SelectionEvent e) {
-				
-			}
-			
-		});
-	}
-
 	@Override
 	public void setFocus() {
 	}
 	
 	public void startTest(int numSpecs) {
-		testList.removeAll();
+		testResultList.clear();
 		progress.setMaximum(numSpecs);
 		progress.setCurrent(0);
 		progress.setSuccess(true);
@@ -96,9 +120,9 @@ public class TestResultView extends ViewPart {
 		progress.setSuccess(numErrors == 0);
 	}
 
-	public void reportResult(String suite, String spec, String message) {
-		testList.add(suite + " " + spec);
-		messages.put(suite + " " + spec, message);
+	public void reportResult(TestResult result) {
+		testResultList.add(result);
+		treeViewer.refresh(true);
 		panel.redraw();
 	}
 
