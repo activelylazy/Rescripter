@@ -20,7 +20,7 @@ public class ScriptRunner {
     private final ScriptLoader scriptLoader;
 	private final DebugMessage debugMessage;
 
-    ScriptRunner() {
+    public ScriptRunner() {
         context = Context.enter();
         scope = context.initStandardObjects();
         putProperty("Load", scriptLoader = new ScriptLoader(this));

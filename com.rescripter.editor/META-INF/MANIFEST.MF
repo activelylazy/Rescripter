@@ -2,18 +2,19 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: RescripterEditor
 Bundle-SymbolicName: com.rescripter.editor;singleton:=true
-Bundle-Version: 1.0.7
+Bundle-Version: 1.0.7.qualifier
 Bundle-Activator: com.rescripter.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.jface.text,
  org.eclipse.ui.editors,
- org.eclipse.core.resources;bundle-version="3.6.1",
- org.eclipse.jdt.core;bundle-version="3.6.2",
- org.eclipse.ui.ide;bundle-version="3.6.2",
  org.eclipse.ui.console;bundle-version="3.5.100"
+ org.eclipse.core.resources;bundle-version="3.5.1",
+ org.eclipse.jdt.core;bundle-version="3.5.1",
+ org.eclipse.ui.ide;bundle-version="3.5.1"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: lib/rhino-1.7R2.jar,
  .,
  resources/
+Export-Package: com.rescripter.script

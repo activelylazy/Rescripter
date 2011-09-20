@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>Rescripter</name>
-	<comment></comment>
+	<name>com.rescripter</name>
+	<comment>Editor and execution environment to run JavaScript that can modify Java source code</comment>
 	<projects>
 	</projects>
 	<buildSpec>

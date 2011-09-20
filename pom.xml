@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.rescripter</groupId>
+    <artifactId>Rescripter</artifactId>
+    <packaging>pom</packaging>
+    <name>Rescripter Parent</name>
+    <version>1.0.7-SNAPSHOT</version>
+
+    <description>Editor and execution environment to run JavaScript that can modify Java source code.</description>
+    <!-- <url>http://rescripter.com/</url> -->
+    <url>http://blog.activelylazy.co.uk/2011/07/18/introduction-to-rescripter/</url>
+
+    <prerequisites>
+        <maven>3.0</maven>
+    </prerequisites>
+
+    <ciManagement>
+        <system>Jenkins</system>
+        <url>https://codecop.ci.cloudbees.com/job/${project.artifactId}/</url>
+    </ciManagement>
+
+    <inceptionYear>2011</inceptionYear>
+
+    <developers>
+        <developer>
+            <id>activelylazy</id>
+            <name>David Green</name>
+            <email>dave at activelylazy dot co dot uk</email>
+            <url>http://www.activelylazy.co.uk/</url>
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>peter.codecop.kofler</id>
+            <name>Peter Kofler</name>
+            <email>peter dot kofler at code-cop dot org</email>
+            <url>http://www.code-cop.org/</url>
+            <roles>
+                <role>Java Developer</role>
+                <role>Code Cop</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>GNU General Public License, version 3 (GPL-3.0)</name>
+            <url>http://www.opensource.org/licenses/GPL-3.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git://github.com/codecop/${project.artifactId}.git</connection>
+        <developerConnection>scm:git:https://github.com/codecop/${project.artifactId}.git</developerConnection>
+        <url>https://github.com/codecop/${project.artifactId}</url>
+    </scm>
+
+    <build>
+        <sourceDirectory>src</sourceDirectory>
+        <plugins>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-maven-plugin</artifactId>
+                <version>${tycho-version}</version>
+                <extensions>true</extensions>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>target-platform-configuration</artifactId>
+                <version>${tycho-version}</version>
+                <configuration>
+                    <resolver>p2</resolver>
+                </configuration>
+            </plugin>
+        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>tycho-compiler-plugin</artifactId>
+                    <version>${tycho-version}</version>
+                    <configuration>
+                        <encoding>UTF-8</encoding>
+                    </configuration>
+                </plugin>
+                <!-- enable source bundle generation -->
+                <plugin>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>tycho-source-plugin</artifactId>
+                    <version>${tycho-version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>2.4.1</version>
+                    <configuration>
+                        <encoding>UTF-8</encoding>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>platform-helios</id>
+            <activation>
+                <property>
+                    <name>platform-version-name</name>
+                    <value>helios</value>
+                </property>
+            </activation>
+            <properties>
+                <eclipse-site>http://download.eclipse.org/releases/helios</eclipse-site>
+                <platform-version>[3.6,3.7)</platform-version>
+            </properties>
+        </profile>
+        <profile>
+            <id>platform-indigo</id>
+            <activation>
+                <property>
+                    <name>platform-version-name</name>
+                    <value>indigo</value>
+                </property>
+            </activation>
+            <properties>
+                <eclipse-site>http://download.eclipse.org/releases/indigo</eclipse-site>
+                <platform-version>[3.7,3.8)</platform-version>
+            </properties>
+        </profile>
+    </profiles>
+
+    <modules>
+        <module>com.rescripter.editor</module>
+        <module>com.rescripter.editor.test</module>
+    </modules>
+
+    <repositories>
+        <repository>
+            <id>helios</id>
+            <layout>p2</layout>
+            <url>${eclipse-site}</url>
+        </repository>
+    </repositories>
+
+    <properties>
+        <tycho-version>0.12.0</tycho-version>
+        <platform-version-name>helios</platform-version-name>
+        <eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
+    </properties>
+
+</project>
