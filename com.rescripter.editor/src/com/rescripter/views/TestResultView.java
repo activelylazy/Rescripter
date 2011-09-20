@@ -44,8 +44,7 @@ public class TestResultView extends ViewPart {
 		progress.setLayoutData(gridData);
 
 		testList = new List(panel, SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL);
-		gridData = new GridData(GridData.FILL_HORIZONTAL);
-		gridData.heightHint = 100;
+		gridData = new GridData(GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL) ;
 		testList.setLayoutData(gridData);
 		
 		label = new Label(panel, 0);
@@ -55,8 +54,7 @@ public class TestResultView extends ViewPart {
 
 		text = new Text(panel, SWT.MULTI | SWT.READ_ONLY | SWT.V_SCROLL | SWT.WRAP);
 		text.setText("");
-		gridData = new GridData(GridData.FILL_HORIZONTAL);
-		gridData.heightHint = 100;
+		gridData = new GridData(GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL) ;
 		text.setLayoutData(gridData);
 		
 		hookClickAction();
