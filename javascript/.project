@@ -4,8 +4,14 @@
 	<comment></comment>
 	<projects>
 	</projects>
-	<buildSpec>
-	</buildSpec>
-	<natures>
-	</natures>
+    <buildSpec>
+        <buildCommand>
+            <name>org.eclipse.wst.jsdt.core.javascriptValidator</name>
+            <arguments>
+            </arguments>
+        </buildCommand>
+    </buildSpec>
+    <natures>
+        <nature>org.eclipse.wst.jsdt.core.jsNature</nature>
+    </natures>
 </projectDescription>
