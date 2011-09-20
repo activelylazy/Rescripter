@@ -10,10 +10,17 @@ Simply enter the script you require; then to run it press Ctrl-R S.
 All the below examples are in the demo project. If you pull the Rescripter project, the demo directory has an Eclipse project setup ready to run the demos.
 
 ## Hello World
-To display messages in your script - e.g. success when you're done (or for primitive debugging).
+To display messages in your script - e.g. success when you're done.
 
 ```java
 Alert.info("Hello world");
+```
+
+## Debugging
+To display debug messages to Eclipse's console:
+
+```java
+Debug.message("Goodbye, world");
 ```
 
 ## Finding Types
@@ -42,6 +49,14 @@ Alert.info(Find.typeByName("Person").getFullyQualifiedName());
 ```
 	
 This will popup a message box with the fully qualified name of the class named Person, i.e. "com.example.Person". Find.typeByName returns an [org.eclipse.jdt.core.IType](http://help.eclipse.org/helios/topic/org.eclipse.jdt.doc.isv/reference/api/org/eclipse/jdt/core/IType.html).
+
+### Finding sub-classes
+To find sub-classes of Person you could use:
+
+```java
+var person = Find.typeByName("Person");
+var references = SearchHelper.findSubClassesOf(person);
+```
 
 ## Finding Methods
 There are three ways to find a method on a type.
@@ -191,4 +206,15 @@ edit.addEdit(ChangeType.addMethod(type, "\n\tpublic String getJobTitle() {\n"+
                                           "\t}"));
 edit.apply();
 ```
+
+### Add Annotation
+Since we can make arbitrary source changes, we could also add an annotation before a class:
+
+```java
+var type = Find.typeByName("Person");
+var edit = new SourceChange(type.getCompilationUnit());
+edit.insert(type.getSourceRange().getOffset(), "@SomeAnnotation\n");
+```
+
+Note: you might need to combine this with adding an import above, to avoid compile errors.
 
