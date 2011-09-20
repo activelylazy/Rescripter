@@ -109,6 +109,19 @@
 
     <profiles>
         <profile>
+            <id>platform-galileo</id>
+            <activation>
+                <property>
+                    <name>platform-version-name</name>
+                    <value>galileo</value>
+                </property>
+            </activation>
+            <properties>
+                <eclipse-site>http://download.eclipse.org/releases/galileo</eclipse-site>
+                <platform-version>[3.5,3.6)</platform-version>
+            </properties>
+        </profile>
+        <profile>
             <id>platform-helios</id>
             <activation>
                 <property>
@@ -152,7 +165,7 @@
 
     <properties>
         <tycho-version>0.12.0</tycho-version>
-        <platform-version-name>helios</platform-version-name>
+        <platform-version-name>galileo</platform-version-name>
         <eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
     </properties>
 
