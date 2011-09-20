@@ -22,7 +22,8 @@ public class TestResultView extends ViewPart {
 	private Composite panel;
 	
 	private Map<String, String> messages = new HashMap<String, String>();
-
+	private ProgressBar progress;
+	
 	@Override
 	public void createPartControl(Composite parent) {
 		panel = new Composite(parent, SWT.NONE);
@@ -37,9 +38,9 @@ public class TestResultView extends ViewPart {
 		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
 		label.setLayoutData(gridData);
 		
-		ProgressBar progress = new ProgressBar(panel, SWT.HORIZONTAL);
-		progress.setMaximum(10);
-		progress.setSelection(4);
+		progress = new ProgressBar(panel, SWT.HORIZONTAL);
+		progress.setMaximum(0);
+		progress.setSelection(0);
 		gridData = new GridData(GridData.FILL_HORIZONTAL);
 		progress.setLayoutData(gridData);
 
@@ -82,9 +83,15 @@ public class TestResultView extends ViewPart {
 	public void setFocus() {
 	}
 	
-	public void startTest() {
+	public void startTest(int numSpecs) {
 		testList.removeAll();
+		progress.setMaximum(numSpecs);
+		progress.setSelection(0);
 		panel.redraw();
+	}
+	
+	public void updateProgress(int numCompleted) {
+		progress.setSelection(numCompleted);
 	}
 
 	public void reportResult(String suite, String spec, String message) {

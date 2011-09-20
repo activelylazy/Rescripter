@@ -3,7 +3,6 @@ function runJasmine() {
 	var jasmineEnv = jasmine.getEnv();
 	jasmineEnv.updateInterval = 1000;
 	var trivialReporter = new RescripterReporter();
-	TestResult.startTest();
 	jasmineEnv.addReporter(trivialReporter);
 	jasmineEnv.execute();
 	while(!trivialReporter.finished) {
@@ -12,12 +11,6 @@ function runJasmine() {
 	}
 	TestResult.updateResults();
 	
-	if (trivialReporter.failed) {
-		Debug.message("Messages are: "+trivialReporter.messages);
-	    Alert.info("Test failed\n"+trivialReporter.messages.join("\n\n"));
-	} else {
-	    Alert.info("Tests passed");
-	}
 }	
 
 function RescripterReporter() {
@@ -26,6 +19,7 @@ function RescripterReporter() {
 	this.finished = false;
 	
     this.reportRunnerStarting = function(runner) {
+    	TestResult.startTest(runner.specs().length);
     };
         
     this.reportRunnerResults = function(runner) {
@@ -33,9 +27,11 @@ function RescripterReporter() {
     
     this.reportSuiteResults =  function(suite) {
         this.finished = true;
+        TestResult.specStarted();	// To finish
     };
     
     this.reportSpecStarting = function(spec) {
+    	TestResult.specStarted();
     };
     
     this.collateFailures = function(spec) {

@@ -7,6 +7,12 @@ Load.file('../../main/script/EasyMockRefactor.rs');
 
 describe("easy mock refactor", function() {
 
+    it("should be created", function() {
+        var refactor = new EasyMockRefactor();
+        
+        expect(refactor).toBeDefined();
+    })
+
     it("finds all easy mock classes and processes each", function() {
         var refactor = new EasyMockRefactor(),
             easyMockType = "easy mock type",
