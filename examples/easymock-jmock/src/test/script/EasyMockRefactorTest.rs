@@ -12,34 +12,47 @@ describe("easy mock refactor", function() {
         
         expect(refactor).toBeDefined();
     })
+    
+    function an_element_in(type) {
+        return {
+            getElement : function() {
+                return {
+                    getParent : function() {
+                        return type;
+                    }
+                };
+            }
+        };
+    }
 
-    it("finds all easy mock classes and processes each", function() {
+    it("process each easy mock class in turn", function() {
         var refactor = new EasyMockRefactor(),
             easyMockType = "easy mock type",
-            createMockMethod = "create mock method";
+            createMockMethod = "create mock method",
+            firstType = "first type",   // we're still going to have the stub problem here
+            secondType = "second type",
+            firstReference = an_element_in(firstType),
+            secondReference = an_element_in(secondType),
+            createMockReferences = [ firstReference, secondReference ];
+            
 
         spyOn(Find, "typeByName").andReturn(easyMockType);
         spyOn(Find, "methodByName").andReturn(createMockMethod);
+        spyOn(Find, "referencesTo").andReturn(createMockReferences);
         spyOn(refactor, "refactorClass");
-        spyOn(Search, "forReferencesToMethod");
+        // TODO We should probably assert that we filter the results - separate test?
+        spyOn(Search, "onlySourceMatches").andReturn(true);
         
         refactor.refactorAll();
         
         expect(Find.typeByName).toHaveBeenCalledWith("org.easymock.EasyMock");
         expect(Find.methodByName).toHaveBeenCalledWith(easyMockType, "createMock");
-        expect(refactor.refactorClass).toHaveBeenCalled();
-        expect(Search.forReferencesToMethod).toHaveBeenCalledWith(createMockMethod);
+        expect(Find.referencesTo).toHaveBeenCalledWith(createMockMethod);
+        expect(refactor.refactorClass.callCount).toEqual(2);
+        expect(refactor.refactorClass).toHaveBeenCalledWith(firstType);
+        expect(refactor.refactorClass).toHaveBeenCalledWith(secondType);
     });
-/*
-    it("finds all easy mock classes and processes each method", function() {
-    
-        refactor = new EasyMockRefactor();
-        
-        spyOn(refactor, "refactorMethod");
-        expect(refactor.refactorMethod).toHaveBeenCalled();    
-    
-    });
-*/
+
 });
 
 runJasmine();

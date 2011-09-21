@@ -41,7 +41,7 @@ function RescripterReporter() {
     			messages.push(item); 
     		}
     	});
-    	return messages.join(", ");
+    	return messages.join(".\n");
     }
     
     this.reportSpecResults = function(spec) {
