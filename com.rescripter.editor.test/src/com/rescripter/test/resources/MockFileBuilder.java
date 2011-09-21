@@ -1,6 +1,7 @@
 package com.rescripter.test.resources;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -34,8 +35,8 @@ public class MockFileBuilder {
 		return this;
 	}
 	
-	public MockFileBuilder with_contents(String contents) {
-		this.contents = contents;
+	public MockFileBuilder with_contents(String theContents) {
+		this.contents = theContents;
 		return this;
 	}
 	
@@ -47,7 +48,7 @@ public class MockFileBuilder {
 				allowing(file).getContents(); will(returnValue(new ByteArrayInputStream(contents.getBytes())));
 				allowing(file).getParent(); will(returnValue(container));
 				allowing(file).getFullPath(); will(new Action() {
-					public Object invoke(Invocation invocation) throws Throwable {
+					public Object invoke(Invocation invocation) {
 						return new Path(getFullPath());
 					}
 					
@@ -63,8 +64,8 @@ public class MockFileBuilder {
 		return file;
 	}
 	
-	MockFileBuilder in_container(IContainer container) {
-		this.container = container;
+	MockFileBuilder in_container(IContainer theContainer) {
+		this.container = theContainer;
 		return this;
 	}
 	
@@ -75,7 +76,7 @@ public class MockFileBuilder {
 	String getFullPath() {
 		return container.getFullPath() == null 
 				? path.toString()
-				: container.getFullPath() + "/" + path.toString();
+				: container.getFullPath() + File.separator + path.toString();
 	}
 	
 }

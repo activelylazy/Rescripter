@@ -26,7 +26,7 @@ public class MockContainerBuilder {
 		this.name = name;
 		context.checking(new Expectations() {{
 			allowing(container).getFullPath(); will(new Action() {
-				public Object invoke(Invocation invocation) throws Throwable {
+				public Object invoke(Invocation invocation) {
 					return new Path(getFullPath());
 				}
 				
@@ -55,9 +55,9 @@ public class MockContainerBuilder {
 		return this;
 	}
 	
-	public MockContainerBuilder containing(final MockContainerBuilder container) {
-		container.setParent(this);
-		addNestedFiles(container);
+	public MockContainerBuilder containing(MockContainerBuilder containerBuilder) {
+		containerBuilder.setParent(this);
+		addNestedFiles(containerBuilder);
 		return this;
 	}
 	

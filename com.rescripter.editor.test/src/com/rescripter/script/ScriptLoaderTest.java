@@ -3,6 +3,7 @@ package com.rescripter.script;
 import static com.rescripter.test.resources.MockContainerBuilder.a_container;
 import static com.rescripter.test.resources.MockFileBuilder.a_file_at;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.eclipse.core.resources.IContainer;
@@ -33,7 +34,7 @@ public class ScriptLoaderTest {
 												.build();
 		
 		context.checking(new Expectations() {{
-			oneOf(runner).run(with(source), with("/some_file.js"), with(currentDirectory.getFile(new Path("some_file.js"))));
+			oneOf(runner).run(with(source), with(File.separator + "some_file.js"), with(currentDirectory.getFile(new Path("some_file.js"))));
 		}});
 		
 		ScriptLoader loader = new ScriptLoader(runner);
@@ -68,12 +69,12 @@ public class ScriptLoaderTest {
 		final ScriptRunner runner = context.mock(ScriptRunner.class);
 		
 		final String currentFile = "current_file.js";
-		final String fullPathToFirstFile = "/some/file.js";
-		final String firstFile = "some/file.js";
+		final String fullPathToFirstFile = File.separator + "some" + File.separator + "file.js";
+		final String firstFile = "some" + File.separator + "file.js";
 		final String firstContents = "I am your father\n";
 		
-		final String fullPathToReferencedFile = "/some/other/library.js";
-		final String relativePathToReferencedFile = "other/library.js";
+		final String fullPathToReferencedFile = File.separator + "some" + File.separator + "other" + File.separator + "library.js";
+		final String relativePathToReferencedFile = "other" + File.separator + "library.js";
 		final String referencedContents = "nothing to see here\n";
 		
 		final IContainer currentDirectory = a_container()
@@ -118,12 +119,12 @@ public class ScriptLoaderTest {
 		
 		final String currentFile = "current_file.js";
 		
-		final String fullPathToFirstFile = "/some/file.js";
-		final String firstFile = "some/file.js";
+		final String fullPathToFirstFile = File.separator + "some" + File.separator + "file.js";
+		final String firstFile = "some" + File.separator + "file.js";
 		final String firstContents = "I am your father\n";
 		
-		final String fullPathToSecondFile = "/another/utility.js";
-		final String secondFile = "another/utility.js";
+		final String fullPathToSecondFile = File.separator + "another" + File.separator + "utility.js";
+		final String secondFile = "another" + File.separator + "utility.js";
 		final String secondContents = "nothing to see here\n";
 		
 		final IContainer currentDirectory = a_container()
