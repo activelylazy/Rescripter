@@ -16,4 +16,13 @@ EasyMockRefactor.prototype.refactorMethod = function() {
 var EasyMockClassRefactor = function(type) { this.type = type; }
 
 EasyMockClassRefactor.prototype.refactor = function() {
+    foreach(this.type.getMethods(), function(each) {
+        new EasyMockMethodRefactor(each).refactor();
+    });
+};
+
+
+var EasyMockMethodRefactor = function(method) { this.method = method; }
+
+EasyMockMethodRefactor.prototype.refactor = function() {
 };

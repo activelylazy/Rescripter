@@ -46,6 +46,26 @@ describe("easy mock refactor", function() {
 
 });
 
+describe("easy mock class refactor", function() {
+    it("should process each method", function() {
+        var someType = { getMethods : function() { } },
+            refactorClass = new EasyMockClassRefactor(someType),
+            methodOne = "method one",
+            methodTwo = "method two",
+            methods = [ methodOne, methodTwo ],
+            methodRefactor = jasmine.createSpyObj("methodRefactor", ["refactor"]);
+        
+        spyOn(window, "EasyMockMethodRefactor").andReturn(methodRefactor);
+        spyOn(someType, "getMethods").andReturn(methods);
+        
+        refactorClass.refactor();
+        
+        expect(window.EasyMockMethodRefactor.callCount).toEqual(2);
+        expect(window.EasyMockMethodRefactor).toHaveBeenCalledWith(methodOne);
+        expect(window.EasyMockMethodRefactor).toHaveBeenCalledWith(methodTwo);
+    });
+});
+
 function an_element_in(type) {
     return {
         getElement : function() {
