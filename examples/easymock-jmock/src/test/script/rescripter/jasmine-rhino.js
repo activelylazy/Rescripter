@@ -2,7 +2,9 @@
  * Provide missing globals for jasmine when running under rhino
  * Include just this, which in turn includes jasmine.
  */
-(function (global) { 
+var window;
+(function (global) {
+	window = global;
     var timer = new java.util.Timer(); 
     var counter = 1; 
     var ids = {}; 

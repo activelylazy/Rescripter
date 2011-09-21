@@ -6,14 +6,14 @@ EasyMockRefactor.prototype.refactorAll = function() {
     var references = filter(Find.referencesTo(createMockMethod), Search.onlySourceMatches);
     var refactor = this;
     foreach(references, function(reference) {
-        refactor.refactorClass(reference.getElement().getParent());
+        new EasyMockClassRefactor(reference.getElement().getParent()).refactor();
     }); 
-};
-
-EasyMockRefactor.prototype.refactorClass = function(type) {
 };
 
 EasyMockRefactor.prototype.refactorMethod = function() {
 };
         
+var EasyMockClassRefactor = function(type) { this.type = type; }
 
+EasyMockClassRefactor.prototype.refactor = function() {
+};

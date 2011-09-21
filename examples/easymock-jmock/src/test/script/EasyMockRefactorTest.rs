@@ -13,22 +13,23 @@ describe("easy mock refactor", function() {
         expect(refactor).toBeDefined();
     })
     
-    it("process each easy mock class in turn", function() {
+    it("processes each class in turn", function() {
         var refactor = new EasyMockRefactor(),
             easyMockType = "easy mock type",
             createMockMethod = "create mock method",
-            firstType = "first type",   // we're still going to have the stub problem here
+            firstType = "first type",
             secondType = "second type",
             firstReference = an_element_in(firstType),
             secondReference = an_element_in(secondType),
-            createMockReferences = [ firstReference, secondReference ];
+            createMockReferences = [ firstReference, secondReference ],
+            classRefactor = jasmine.createSpyObj("classRefactor", ["refactor"]);
             
 
         spyOn(Find, "typeByName").andReturn(easyMockType);
         spyOn(Find, "methodByName").andReturn(createMockMethod);
         spyOn(Find, "referencesTo").andReturn(createMockReferences);
-        spyOn(refactor, "refactorClass");
         spyOn(Search, "onlySourceMatches").andReturn(true);
+        spyOn(window, "EasyMockClassRefactor").andReturn(classRefactor);
         
         refactor.refactorAll();
         
@@ -38,9 +39,9 @@ describe("easy mock refactor", function() {
         expect(Search.onlySourceMatches.callCount).toEqual(2);
         expect(Search.onlySourceMatches).toHaveBeenCalledWith(firstReference);
         expect(Search.onlySourceMatches).toHaveBeenCalledWith(secondReference);
-        expect(refactor.refactorClass.callCount).toEqual(2);
-        expect(refactor.refactorClass).toHaveBeenCalledWith(firstType);
-        expect(refactor.refactorClass).toHaveBeenCalledWith(secondType);
+        expect(window.EasyMockClassRefactor).toHaveBeenCalledWith(firstType);
+        expect(window.EasyMockClassRefactor).toHaveBeenCalledWith(secondType);
+        expect(classRefactor.refactor.callCount).toEqual(2);
     });
 
 });
