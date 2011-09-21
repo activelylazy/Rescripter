@@ -153,6 +153,8 @@
         <module>com.rescripter.jmock</module>
         <module>com.rescripter.editor</module>
         <module>com.rescripter.editor.test</module>
+	<module>com.rescripter</module>
+	<module>update-site</module>
     </modules>
 
     <repositories>
