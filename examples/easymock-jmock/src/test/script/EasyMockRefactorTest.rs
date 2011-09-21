@@ -13,18 +13,6 @@ describe("easy mock refactor", function() {
         expect(refactor).toBeDefined();
     })
     
-    function an_element_in(type) {
-        return {
-            getElement : function() {
-                return {
-                    getParent : function() {
-                        return type;
-                    }
-                };
-            }
-        };
-    }
-
     it("process each easy mock class in turn", function() {
         var refactor = new EasyMockRefactor(),
             easyMockType = "easy mock type",
@@ -40,7 +28,6 @@ describe("easy mock refactor", function() {
         spyOn(Find, "methodByName").andReturn(createMockMethod);
         spyOn(Find, "referencesTo").andReturn(createMockReferences);
         spyOn(refactor, "refactorClass");
-        // TODO We should probably assert that we filter the results - separate test?
         spyOn(Search, "onlySourceMatches").andReturn(true);
         
         refactor.refactorAll();
@@ -57,5 +44,18 @@ describe("easy mock refactor", function() {
     });
 
 });
+
+function an_element_in(type) {
+    return {
+        getElement : function() {
+            return {
+                getParent : function() {
+                    return type;
+                }
+            };
+        }
+    };
+}
+
 
 runJasmine();
