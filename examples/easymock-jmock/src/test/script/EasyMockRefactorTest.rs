@@ -48,6 +48,9 @@ describe("easy mock refactor", function() {
         expect(Find.typeByName).toHaveBeenCalledWith("org.easymock.EasyMock");
         expect(Find.methodByName).toHaveBeenCalledWith(easyMockType, "createMock");
         expect(Find.referencesTo).toHaveBeenCalledWith(createMockMethod);
+        expect(Search.onlySourceMatches.callCount).toEqual(2);
+        expect(Search.onlySourceMatches).toHaveBeenCalledWith(firstReference);
+        expect(Search.onlySourceMatches).toHaveBeenCalledWith(secondReference);
         expect(refactor.refactorClass.callCount).toEqual(2);
         expect(refactor.refactorClass).toHaveBeenCalledWith(firstType);
         expect(refactor.refactorClass).toHaveBeenCalledWith(secondType);
