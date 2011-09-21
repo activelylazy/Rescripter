@@ -25,4 +25,12 @@ EasyMockClassRefactor.prototype.refactor = function() {
 var EasyMockMethodRefactor = function(method) { this.method = method; }
 
 EasyMockMethodRefactor.prototype.refactor = function() {
+    createMockMethod = Find.methodByName(Find.typeByName("org.easymock.EasyMock"), "createMock");
+    var references = Find.referencesWithinType(createMockMethod, this.method);
+    var mocks = transform(references, function(each) {
+        new Mock(each);
+    });
 };
+
+
+var Mock = function() { }

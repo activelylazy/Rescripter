@@ -66,6 +66,33 @@ describe("easy mock class refactor", function() {
     });
 });
 
+describe("easy mock method refactor", function() {
+    it("should get a list of mocks", function() {
+        var method = "some method",
+            easyMockType = "easy mock type",
+            createMockMethod = "create mock method",
+            reference1 = "reference 1",
+            reference2 = "reference 2",
+            references = [ reference1, reference2 ],
+            refactorMethod = new EasyMockMethodRefactor(method),
+            mock = jasmine.createSpyObj("mock", [ "todo" ]);
+
+        spyOn(Find, "typeByName").andReturn(easyMockType);
+        spyOn(Find, "methodByName").andReturn(createMockMethod);
+        spyOn(Find, "referencesWithinType").andReturn(references);
+        spyOn(window, "Mock").andReturn(mock);
+            
+        refactorMethod.refactor();
+        
+        expect(Find.typeByName).toHaveBeenCalledWith("org.easymock.EasyMock");
+        expect(Find.methodByName).toHaveBeenCalledWith(easyMockType, "createMock");
+        expect(Find.referencesWithinType).toHaveBeenCalledWith(createMockMethod, method);
+        expect(window.Mock.callCount).toEqual(2);
+        expect(window.Mock).toHaveBeenCalledWith(reference1);
+        expect(window.Mock).toHaveBeenCalledWith(reference2);
+    });
+});
+
 function an_element_in(type) {
     return {
         getElement : function() {
