@@ -13,7 +13,7 @@ easily but are laborious to do by hand - then *Rescripter* is for you.
 In Eclipse go to Help | Install New Software...
 Create a new update site with the URL:
 
->    https://raw.github.com/activelylazy/Rescripter/master/update-site/
+>    https://raw.github.com/activelylazy/Rescripter/master/update-site/target/site
 
 # How Do I Use It?
 

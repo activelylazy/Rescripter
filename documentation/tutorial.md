@@ -2,7 +2,7 @@
 
 ## Getting Started
 
-Once you've installed the plugin from the [update site](https://raw.github.com/activelylazy/Rescripter/master/update-site/).
+Once you've installed the plugin from the [update site](https://raw.github.com/activelylazy/Rescripter/master/update-site/target/site).
 Create a new file with the extension .rs. The Rescripter editor lets you enter and run JavaScript, this JavaScript has access to the Eclipse plugin environment, as well as some helper objects to make searching, parsing and modifying Java code easier. 
 
 Simply enter the script you require; then to run it press Ctrl-R S.
