@@ -17,7 +17,7 @@ import org.jmock.api.Invocation;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 
-public class ScriptLoaderTest {
+public class WorkspaceScriptLoaderTest {
 	
 	private Mockery context = new Mockery() {{ setImposteriser(ClassImposteriser.INSTANCE); }};
 
@@ -37,7 +37,7 @@ public class ScriptLoaderTest {
 			oneOf(runner).run(with(source), with(File.separator + "some_file.js"), with(currentDirectory.getFile(new Path("some_file.js"))));
 		}});
 		
-		ScriptLoader loader = new ScriptLoader(runner);
+		WorkspaceScriptLoader loader = new WorkspaceScriptLoader(runner);
 		loader.setCurrentLocation(currentDirectory.getFile(new Path("current_file.js")));
 		loader.file("some_file.js");
 		
@@ -58,7 +58,7 @@ public class ScriptLoaderTest {
 				.build();
 		
 		
-		ScriptLoader loader = new ScriptLoader(runner);
+		WorkspaceScriptLoader loader = new WorkspaceScriptLoader(runner);
 		loader.setCurrentLocation(currentDirectory.getFile(new Path(currentFile)));
 		
 		loader.file(someFile);
@@ -89,7 +89,7 @@ public class ScriptLoaderTest {
 																	.with_contents(referencedContents))))
 												.build();
 
-		final ScriptLoader loader = new ScriptLoader(runner);
+		final WorkspaceScriptLoader loader = new WorkspaceScriptLoader(runner);
 		
 		context.checking(new Expectations() {{
 			oneOf(runner).run(firstContents, fullPathToFirstFile, currentDirectory.getFile(new Path(firstFile)));
@@ -139,7 +139,7 @@ public class ScriptLoaderTest {
 															.with_contents(secondContents)))
 												.build();
 
-		final ScriptLoader loader = new ScriptLoader(runner);
+		final WorkspaceScriptLoader loader = new WorkspaceScriptLoader(runner);
 		
 		context.checking(new Expectations() {{
 			oneOf(runner).run(firstContents, fullPathToFirstFile, currentDirectory.getFile(new Path(firstFile)));

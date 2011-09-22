@@ -18,17 +18,23 @@ public class ScriptRunner {
 
     private final Context context;
     private final Scriptable scope;
-    private final ScriptLoader scriptLoader;
+    private final WorkspaceScriptLoader scriptLoader;
 	private DebugMessage debugMessage;
 
-    public ScriptRunner() {
+    public ScriptRunner(IWorkbenchWindow window) throws IOException {
         context = Context.enter();
         scope = context.initStandardObjects();
-        putProperty("Load", scriptLoader = new ScriptLoader(this));
+        putProperty("Load", scriptLoader = new WorkspaceScriptLoader(this));
         if (Platform.isRunning()) {
         	putProperty("Debug", debugMessage = new DebugMessage());
         }
 		putProperty("TestResult", new TestResultPublisher());
+        putProperty("Alert", new Alerter(window));
+        putProperty("SearchHelper", new SearchHelper());
+        putProperty("ChangeText", new ChangeText());
+        putProperty("ASTTokenFinder", new ASTTokenFinder());
+
+        includeSystem();
     }
 
     public void run(String source, String sourceName, IFile location) {
@@ -39,23 +45,9 @@ public class ScriptRunner {
     public void putProperty(String name, Object object) {
         ScriptableObject.putProperty(scope, name, object);
     }
-
-    public static ScriptRunner createBasicScriptRunner() {
-    	return new ScriptRunner();
-    }
-
-    public static ScriptRunner createJavaSyntaxScriptRunner(IWorkbenchWindow window) throws IOException {
-        Alerter alerter = new Alerter(window);
-
-        ScriptRunner runner = new ScriptRunner();
-        runner.putProperty("Alert", alerter);
-        runner.putProperty("SearchHelper", new SearchHelper());
-        runner.putProperty("ChangeText", new ChangeText());
-        runner.putProperty("ASTTokenFinder", new ASTTokenFinder());
-
-        runner.includeSystem();
-
-        return runner;
+    
+    public Object getProperty(String name) {
+    	return ScriptableObject.getProperty(scope, name);
     }
 
     private void includeSystem() throws IOException {

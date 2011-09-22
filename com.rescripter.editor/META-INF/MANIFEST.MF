@@ -18,4 +18,5 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: lib/rhino-1.7R2.jar,
  .,
  resources/
-Export-Package: com.rescripter.script
+Export-Package: com.rescripter.script,
+ com.rescripter.syntax

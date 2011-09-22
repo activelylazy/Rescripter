@@ -28,7 +28,7 @@ public class RunRescripterHandler extends AbstractHandler {
             FileEditorInput fileEditorInput = (FileEditorInput) editorInput;
             IFile file = fileEditorInput.getFile();
 			
-			ScriptRunner runner = ScriptRunner.createJavaSyntaxScriptRunner(window);
+			ScriptRunner runner = new ScriptRunner(window);
 			try {
 				runner.run(document.get(), editor.getTitle(), file);
 			} finally {
