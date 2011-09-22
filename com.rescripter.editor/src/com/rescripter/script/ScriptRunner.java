@@ -26,7 +26,7 @@ public class ScriptRunner {
         scope = context.initStandardObjects();
         putProperty("Load", scriptLoader = new ScriptLoader(this));
         if (Platform.isRunning()) {
-		putProperty("Debug", debugMessage = new DebugMessage());
+        	putProperty("Debug", debugMessage = new DebugMessage());
         }
 		putProperty("TestResult", new TestResultPublisher());
     }

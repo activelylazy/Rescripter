@@ -33,4 +33,18 @@ EasyMockMethodRefactor.prototype.refactor = function() {
 };
 
 
-var Mock = function() { }
+var Mock = function(reference) {
+//    var s = reference.getElement().getCompilationUnit().getSource().substring(reference.offset, reference.offset+reference.length);
+//    Debug.message("It's: "+s);
+
+    var parser = org.eclipse.jdt.core.dom.ASTParser.newParser(org.eclipse.jdt.core.dom.AST.JLS3);
+    parser.setKind(org.eclipse.jdt.core.dom.ASTParser.K_COMPILATION_UNIT);
+    parser.setSource(reference.getElement().getCompilationUnit());
+    parser.setResolveBindings(true);
+    
+    var ast = parser.createAST(null);
+    
+    var node = org.eclipse.jdt.core.dom.NodeFinder.perform(ast, reference.offset, reference.length);
+    
+    Debug.message("Found "+node+" - which is a "+node.getClass().getName());
+}

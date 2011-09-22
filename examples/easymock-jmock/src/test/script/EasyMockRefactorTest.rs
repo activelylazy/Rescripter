@@ -93,6 +93,9 @@ describe("easy mock method refactor", function() {
     });
 });
 
+describe("mock", function() {
+});
+
 function an_element_in(type) {
     return {
         getElement : function() {
