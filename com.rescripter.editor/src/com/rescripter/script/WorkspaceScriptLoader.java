@@ -1,8 +1,6 @@
 package com.rescripter.script;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -12,11 +10,18 @@ import org.eclipse.core.runtime.Path;
 public class WorkspaceScriptLoader implements ScriptLoader {
 
     private final ScriptRunner scriptRunner;
-    private IFile location;
+    private final IFile location;
+    private final ScriptStack scriptStack;
+    private final WorkspaceFileReader fileReader;
 
-    public WorkspaceScriptLoader(IFile location, ScriptRunner scriptRunner) {
+    public WorkspaceScriptLoader(IFile location, 
+    							 ScriptRunner scriptRunner, 
+    							 ScriptStack scriptStack,
+    							 WorkspaceFileReader fileReader) {
     	this.location = location;
         this.scriptRunner = scriptRunner;
+		this.scriptStack = scriptStack;
+		this.fileReader = fileReader;
     }
     
     public void file(String filename) throws IOException, CoreException {
@@ -25,25 +30,19 @@ public class WorkspaceScriptLoader implements ScriptLoader {
         if (!file.exists()) {
             throw new IOException("Failed to find file '" + file.getLocation().toString()+"'");
         }
+
+        String contents = fileReader.getContents(file);
         
-        StringBuffer buff = new StringBuffer();
-        LineNumberReader in = new LineNumberReader(new InputStreamReader(file.getContents()));
-        try {
-            String line;
-            while ((line = in.readLine()) != null) {
-                buff.append(line).append("\n");
-            }
-        } finally {
-            in.close();
-        }
-        IFile lastLocation = location;
-        this.location = file;
-        scriptRunner.run(buff.toString(), file.getFullPath().toOSString(), file);
-        this.location = lastLocation;
+        scriptStack.push(new WorkspaceScriptLoader(file, scriptRunner, scriptStack, fileReader));
+        scriptRunner.run(contents, file.getFullPath().toPortableString(), file);
+        scriptStack.pop();
     }
 
 	public IFile getCurrentLocation() {
-		return this.location;
+		return location;
 	}
 
+	public String toString() {
+		return "a workspace script loader";
+	}
 }

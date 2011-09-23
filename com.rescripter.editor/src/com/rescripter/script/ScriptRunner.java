@@ -20,6 +20,7 @@ public class ScriptRunner {
     private final Scriptable scope;
     private final ScriptStack scriptStack;
 	private DebugMessage debugMessage;
+	private WorkspaceFileReader fileReader = new WorkspaceFileReader();
 
     public ScriptRunner(IWorkbenchWindow window) throws IOException {
         context = Context.enter();
@@ -38,7 +39,7 @@ public class ScriptRunner {
     }
 
     public void run(String source, String sourceName, IFile location) {
-    	WorkspaceScriptLoader loader = new WorkspaceScriptLoader(location, this);
+    	WorkspaceScriptLoader loader = new WorkspaceScriptLoader(location, this, scriptStack, fileReader);
 		scriptStack.push(loader);
         context.evaluateString(scope, source, sourceName, 1, null);
     }
