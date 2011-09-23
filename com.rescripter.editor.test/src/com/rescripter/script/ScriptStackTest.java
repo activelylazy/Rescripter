@@ -8,6 +8,8 @@ import org.jmock.Mockery;
 import org.jmock.Sequence;
 import org.junit.Test;
 
+import com.rescripter.resources.ScriptLoader;
+
 public class ScriptStackTest {
 
 	private Mockery context = new Mockery();

@@ -1,4 +1,4 @@
-package com.rescripter.script;
+package com.rescripter.resources;
 
 import static com.rescripter.test.matchers.PathMatcher.a_path_matching;
 
@@ -13,6 +13,10 @@ import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 
+import com.rescripter.resources.WorkspaceFileReader;
+import com.rescripter.resources.WorkspaceScriptLoader;
+import com.rescripter.script.ScriptRunner;
+import com.rescripter.script.ScriptStack;
 import com.rescripter.test.matchers.WorkspaceScriptLoaderMatcher;
 
 public class WorkspaceScriptLoaderTest {

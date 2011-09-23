@@ -1,4 +1,4 @@
-package com.rescripter.script;
+package com.rescripter.resources;
 
 import java.io.IOException;
 import java.io.InputStreamReader;

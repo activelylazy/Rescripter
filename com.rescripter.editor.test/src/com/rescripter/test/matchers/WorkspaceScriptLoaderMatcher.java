@@ -3,7 +3,7 @@ package com.rescripter.test.matchers;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 
-import com.rescripter.script.WorkspaceScriptLoader;
+import com.rescripter.resources.WorkspaceScriptLoader;
 
 public class WorkspaceScriptLoaderMatcher extends TypeSafeDiagnosingMatcher<WorkspaceScriptLoader> {
 	

@@ -1,4 +1,4 @@
-package com.rescripter.script;
+package com.rescripter.resources;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -12,6 +12,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.junit.Test;
+
+import com.rescripter.resources.WorkspaceFileReader;
 
 public class WorkspaceFileReaderTest {
 

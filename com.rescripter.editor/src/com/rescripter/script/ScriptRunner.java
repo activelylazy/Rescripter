@@ -11,6 +11,8 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
+import com.rescripter.resources.WorkspaceFileReader;
+import com.rescripter.resources.WorkspaceScriptLoader;
 import com.rescripter.syntax.ASTTokenFinder;
 import com.rescripter.syntax.ChangeText;
 

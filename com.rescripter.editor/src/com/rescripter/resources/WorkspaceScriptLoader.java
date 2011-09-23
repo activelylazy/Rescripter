@@ -1,4 +1,4 @@
-package com.rescripter.script;
+package com.rescripter.resources;
 
 import java.io.IOException;
 
@@ -6,6 +6,9 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+
+import com.rescripter.script.ScriptRunner;
+import com.rescripter.script.ScriptStack;
 
 public class WorkspaceScriptLoader implements ScriptLoader {
 

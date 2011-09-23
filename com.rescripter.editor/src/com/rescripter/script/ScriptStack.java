@@ -5,6 +5,8 @@ import java.util.Stack;
 
 import org.eclipse.core.runtime.CoreException;
 
+import com.rescripter.resources.ScriptLoader;
+
 public class ScriptStack implements ScriptLoader {
 
 	private Stack<ScriptLoader> stack = new Stack<ScriptLoader>();
