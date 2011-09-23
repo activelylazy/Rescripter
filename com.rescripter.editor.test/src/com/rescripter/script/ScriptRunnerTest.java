@@ -12,7 +12,7 @@ import com.rescripter.syntax.ASTTokenFinder;
 import com.rescripter.syntax.ChangeText;
 
 public class ScriptRunnerTest {
-
+	
     public static class CheckCalled {
         boolean called = false;
         
@@ -23,17 +23,18 @@ public class ScriptRunnerTest {
     
     @Test public void
     runs_script() throws IOException {
-        ScriptRunner runner = new ScriptRunner(null);
+        ScriptRunner runner = new ScriptRunner(null, new ScriptStack());
+        
         CheckCalled stuff = new CheckCalled();
         runner.putProperty("test",stuff);
-        runner.run("test.call()","test source",null);
+        runner.run("test.call()","test source");
 
         assertTrue(stuff.called);
     }
     
     @Test public void
     scope_includes_required_classes() throws IOException {
-    	ScriptRunner runner = new ScriptRunner(null);
+    	ScriptRunner runner = new ScriptRunner(null, new ScriptStack());
     	assertThat(runner.getProperty("Load"), instanceOf(ScriptStack.class));
     	assertThat(runner.getProperty("TestResult"), instanceOf(TestResultPublisher.class));
     	assertThat(runner.getProperty("Alert"), instanceOf(Alerter.class));

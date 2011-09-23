@@ -4,15 +4,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
-import com.rescripter.resources.FileContentsReader;
-import com.rescripter.resources.WorkspaceScriptLoader;
 import com.rescripter.syntax.ASTTokenFinder;
 import com.rescripter.syntax.ChangeText;
 
@@ -20,14 +17,13 @@ public class ScriptRunner {
 
     private final Context context;
     private final Scriptable scope;
-    private final ScriptStack scriptStack;
 	private DebugMessage debugMessage;
-	private FileContentsReader fileReader = new FileContentsReader();
 
-    public ScriptRunner(IWorkbenchWindow window) throws IOException {
-        context = Context.enter();
-        scope = context.initStandardObjects();
-        putProperty("Load", scriptStack = new ScriptStack());
+    public ScriptRunner(IWorkbenchWindow window,
+    					ScriptStack scriptStack) throws IOException {
+        this.context = createContext();
+        this.scope = context.initStandardObjects();
+        putProperty("Load", scriptStack);
         if (Platform.isRunning()) {
         	putProperty("Debug", debugMessage = new DebugMessage());
         }
@@ -39,10 +35,12 @@ public class ScriptRunner {
 
         includeSystem();
     }
+    
+    protected Context createContext() {
+    	return Context.enter();
+    }
 
-    public void run(String source, String sourceName, IFile location) {
-    	WorkspaceScriptLoader loader = new WorkspaceScriptLoader(location, this, scriptStack, fileReader);
-		scriptStack.push(loader);
+    public void run(String source, String sourceName) {
         context.evaluateString(scope, source, sourceName, 1, null);
     }
 
@@ -65,7 +63,7 @@ public class ScriptRunner {
     	} finally {
     		in.close();
     	}
-    	run(buff.toString(), "System.rs", null);
+    	run(buff.toString(), "System.rs");
     }
 
 	public void done() {

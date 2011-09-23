@@ -46,7 +46,7 @@ public class WorkspaceScriptLoaderTest {
 			oneOf(otherFile).getContents(); will(returnValue(inputStream));
 			oneOf(fileReader).getContents(inputStream); will(returnValue(otherContents));
 			oneOf(scriptStack).push(with(WorkspaceScriptLoaderMatcher.a_loader_relative_to(otherFilename)));
-			oneOf(scriptRunner).run(otherContents, otherFilename, otherFile);
+			oneOf(scriptRunner).run(otherContents, otherFilename);
 			oneOf(scriptStack).pop();
 			
 			allowing(otherFile).getFullPath(); will(returnValue(new Path(otherFilename)));

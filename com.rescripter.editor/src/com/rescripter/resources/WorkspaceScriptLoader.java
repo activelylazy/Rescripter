@@ -37,7 +37,7 @@ public class WorkspaceScriptLoader implements ScriptLoader {
         String contents = fileReader.getContents(file.getContents());
         
         scriptStack.push(new WorkspaceScriptLoader(file, scriptRunner, scriptStack, fileReader));
-        scriptRunner.run(contents, file.getFullPath().toPortableString(), file);
+        scriptRunner.run(contents, file.getFullPath().toPortableString());
         scriptStack.pop();
     }
 
