@@ -15,12 +15,12 @@ public class WorkspaceScriptLoader implements ScriptLoader {
     private final ScriptRunner scriptRunner;
     private final IFile location;
     private final ScriptStack scriptStack;
-    private final WorkspaceFileReader fileReader;
+    private final FileContentsReader fileReader;
 
     public WorkspaceScriptLoader(IFile location, 
     							 ScriptRunner scriptRunner, 
     							 ScriptStack scriptStack,
-    							 WorkspaceFileReader fileReader) {
+    							 FileContentsReader fileReader) {
     	this.location = location;
         this.scriptRunner = scriptRunner;
 		this.scriptStack = scriptStack;
@@ -34,7 +34,7 @@ public class WorkspaceScriptLoader implements ScriptLoader {
             throw new IOException("Failed to find file '" + file.getLocation().toString()+"'");
         }
 
-        String contents = fileReader.getContents(file);
+        String contents = fileReader.getContents(file.getContents());
         
         scriptStack.push(new WorkspaceScriptLoader(file, scriptRunner, scriptStack, fileReader));
         scriptRunner.run(contents, file.getFullPath().toPortableString(), file);

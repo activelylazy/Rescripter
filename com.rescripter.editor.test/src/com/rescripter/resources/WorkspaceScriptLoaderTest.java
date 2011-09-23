@@ -3,6 +3,7 @@ package com.rescripter.resources;
 import static com.rescripter.test.matchers.PathMatcher.a_path_matching;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -13,7 +14,7 @@ import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 
-import com.rescripter.resources.WorkspaceFileReader;
+import com.rescripter.resources.FileContentsReader;
 import com.rescripter.resources.WorkspaceScriptLoader;
 import com.rescripter.script.ScriptRunner;
 import com.rescripter.script.ScriptStack;
@@ -28,7 +29,7 @@ public class WorkspaceScriptLoaderTest {
 		
 		final ScriptRunner scriptRunner = context.mock(ScriptRunner.class);
 		final ScriptStack scriptStack = context.mock(ScriptStack.class);
-		final WorkspaceFileReader fileReader = context.mock(WorkspaceFileReader.class);
+		final FileContentsReader fileReader = context.mock(FileContentsReader.class);
 		
 		final IFile location = context.mock(IFile.class, "location");
 		final IContainer container = context.mock(IContainer.class);
@@ -36,12 +37,14 @@ public class WorkspaceScriptLoaderTest {
 		final String otherFilename = "other/file.rs";
 		final IFile otherFile = context.mock(IFile.class, "otherfile");
 		final String otherContents = "some.script();\n";
+		final InputStream inputStream = context.mock(InputStream.class);
 		
 		context.checking(new Expectations() {{
 			oneOf(location).getParent(); will(returnValue(container));
 			oneOf(container).getFile(with(a_path_matching(otherFilename))); will(returnValue(otherFile));
 			oneOf(otherFile).exists(); will(returnValue(true));
-			oneOf(fileReader).getContents(otherFile); will(returnValue(otherContents));
+			oneOf(otherFile).getContents(); will(returnValue(inputStream));
+			oneOf(fileReader).getContents(inputStream); will(returnValue(otherContents));
 			oneOf(scriptStack).push(with(WorkspaceScriptLoaderMatcher.a_loader_relative_to(otherFilename)));
 			oneOf(scriptRunner).run(otherContents, otherFilename, otherFile);
 			oneOf(scriptStack).pop();

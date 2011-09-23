@@ -11,7 +11,7 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
-import com.rescripter.resources.WorkspaceFileReader;
+import com.rescripter.resources.FileContentsReader;
 import com.rescripter.resources.WorkspaceScriptLoader;
 import com.rescripter.syntax.ASTTokenFinder;
 import com.rescripter.syntax.ChangeText;
@@ -22,7 +22,7 @@ public class ScriptRunner {
     private final Scriptable scope;
     private final ScriptStack scriptStack;
 	private DebugMessage debugMessage;
-	private WorkspaceFileReader fileReader = new WorkspaceFileReader();
+	private FileContentsReader fileReader = new FileContentsReader();
 
     public ScriptRunner(IWorkbenchWindow window) throws IOException {
         context = Context.enter();
