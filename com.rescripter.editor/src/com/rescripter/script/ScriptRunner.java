@@ -18,13 +18,13 @@ public class ScriptRunner {
 
     private final Context context;
     private final Scriptable scope;
-    private final WorkspaceScriptLoader scriptLoader;
+    private final ScriptStack scriptStack;
 	private DebugMessage debugMessage;
 
     public ScriptRunner(IWorkbenchWindow window) throws IOException {
         context = Context.enter();
         scope = context.initStandardObjects();
-        putProperty("Load", scriptLoader = new WorkspaceScriptLoader(this));
+        putProperty("Load", scriptStack = new ScriptStack());
         if (Platform.isRunning()) {
         	putProperty("Debug", debugMessage = new DebugMessage());
         }
@@ -38,7 +38,9 @@ public class ScriptRunner {
     }
 
     public void run(String source, String sourceName, IFile location) {
-        scriptLoader.setCurrentLocation(location);
+    	WorkspaceScriptLoader loader = new WorkspaceScriptLoader(this);
+    	loader.setCurrentLocation(location);
+		scriptStack.push(loader);
         context.evaluateString(scope, source, sourceName, 1, null);
     }
 

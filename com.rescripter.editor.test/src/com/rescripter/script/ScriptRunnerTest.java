@@ -34,7 +34,7 @@ public class ScriptRunnerTest {
     @Test public void
     scope_includes_required_classes() throws IOException {
     	ScriptRunner runner = new ScriptRunner(null);
-    	assertThat(runner.getProperty("Load"), instanceOf(ScriptLoader.class));
+    	assertThat(runner.getProperty("Load"), instanceOf(ScriptStack.class));
     	assertThat(runner.getProperty("TestResult"), instanceOf(TestResultPublisher.class));
     	assertThat(runner.getProperty("Alert"), instanceOf(Alerter.class));
     	assertThat(runner.getProperty("SearchHelper"), instanceOf(SearchHelper.class));
