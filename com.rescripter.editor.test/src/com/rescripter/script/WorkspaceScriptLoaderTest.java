@@ -37,8 +37,7 @@ public class WorkspaceScriptLoaderTest {
 			oneOf(runner).run(with(source), with(File.separator + "some_file.js"), with(currentDirectory.getFile(new Path("some_file.js"))));
 		}});
 		
-		WorkspaceScriptLoader loader = new WorkspaceScriptLoader(runner);
-		loader.setCurrentLocation(currentDirectory.getFile(new Path("current_file.js")));
+		WorkspaceScriptLoader loader = new WorkspaceScriptLoader(currentDirectory.getFile(new Path("current_file.js")), runner);
 		loader.file("some_file.js");
 		
 		context.assertIsSatisfied();
@@ -58,8 +57,7 @@ public class WorkspaceScriptLoaderTest {
 				.build();
 		
 		
-		WorkspaceScriptLoader loader = new WorkspaceScriptLoader(runner);
-		loader.setCurrentLocation(currentDirectory.getFile(new Path(currentFile)));
+		WorkspaceScriptLoader loader = new WorkspaceScriptLoader(currentDirectory.getFile(new Path(currentFile)), runner);
 		
 		loader.file(someFile);
 	}
@@ -89,7 +87,7 @@ public class WorkspaceScriptLoaderTest {
 																	.with_contents(referencedContents))))
 												.build();
 
-		final WorkspaceScriptLoader loader = new WorkspaceScriptLoader(runner);
+		final WorkspaceScriptLoader loader = new WorkspaceScriptLoader(currentDirectory.getFile(new Path("current_file.js")), runner);
 		
 		context.checking(new Expectations() {{
 			oneOf(runner).run(firstContents, fullPathToFirstFile, currentDirectory.getFile(new Path(firstFile)));
@@ -107,7 +105,6 @@ public class WorkspaceScriptLoaderTest {
 			oneOf(runner).run(referencedContents, fullPathToReferencedFile, currentDirectory.getFile(new Path("some/other/library.js")));
 		}});
 		
-		loader.setCurrentLocation(currentDirectory.getFile(new Path("current_file.js")));
 		loader.file(firstFile);
 		
 		context.assertIsSatisfied();
@@ -139,14 +136,13 @@ public class WorkspaceScriptLoaderTest {
 															.with_contents(secondContents)))
 												.build();
 
-		final WorkspaceScriptLoader loader = new WorkspaceScriptLoader(runner);
+		final WorkspaceScriptLoader loader = new WorkspaceScriptLoader(currentDirectory.getFile(new Path("current_file.js")), runner);
 		
 		context.checking(new Expectations() {{
 			oneOf(runner).run(firstContents, fullPathToFirstFile, currentDirectory.getFile(new Path(firstFile)));
 			oneOf(runner).run(secondContents, fullPathToSecondFile, currentDirectory.getFile(new Path(secondFile)));
 		}});
 		
-		loader.setCurrentLocation(currentDirectory.getFile(new Path("current_file.js")));
 		loader.file(firstFile);
 		loader.file(secondFile);
 		

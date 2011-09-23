@@ -14,7 +14,8 @@ public class WorkspaceScriptLoader implements ScriptLoader {
     private final ScriptRunner scriptRunner;
     private IFile location;
 
-    public WorkspaceScriptLoader(ScriptRunner scriptRunner) {
+    public WorkspaceScriptLoader(IFile location, ScriptRunner scriptRunner) {
+    	this.location = location;
         this.scriptRunner = scriptRunner;
     }
     
@@ -41,7 +42,8 @@ public class WorkspaceScriptLoader implements ScriptLoader {
         this.location = lastLocation;
     }
 
-    public void setCurrentLocation(IFile location) {
-        this.location = location;
-    }
+	public IFile getCurrentLocation() {
+		return this.location;
+	}
+
 }

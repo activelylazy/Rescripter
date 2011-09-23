@@ -38,8 +38,7 @@ public class ScriptRunner {
     }
 
     public void run(String source, String sourceName, IFile location) {
-    	WorkspaceScriptLoader loader = new WorkspaceScriptLoader(this);
-    	loader.setCurrentLocation(location);
+    	WorkspaceScriptLoader loader = new WorkspaceScriptLoader(location, this);
 		scriptStack.push(loader);
         context.evaluateString(scope, source, sourceName, 1, null);
     }
