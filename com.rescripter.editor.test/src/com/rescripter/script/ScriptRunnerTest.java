@@ -5,13 +5,21 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.io.InputStream;
 
+import org.eclipse.core.runtime.CoreException;
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 
+import com.rescripter.resources.FileContentsReader;
 import com.rescripter.syntax.ASTTokenFinder;
 import com.rescripter.syntax.ChangeText;
 
 public class ScriptRunnerTest {
+	
+	private Mockery context = new Mockery() {{ setImposteriser(ClassImposteriser.INSTANCE); }};
 	
     public static class CheckCalled {
         boolean called = false;
@@ -22,8 +30,14 @@ public class ScriptRunnerTest {
     }
     
     @Test public void
-    runs_script() throws IOException {
-        ScriptRunner runner = new ScriptRunner(null, new ScriptStack());
+    runs_script() throws IOException, CoreException {
+    	final FileContentsReader fileReader = context.mock(FileContentsReader.class);
+    	
+    	context.checking(new Expectations() {{
+    		oneOf(fileReader).getContents(with(any(InputStream.class))); will(returnValue(""));
+    	}});
+    	
+        ScriptRunner runner = new ScriptRunner(null, new ScriptStack(), fileReader);
         
         CheckCalled stuff = new CheckCalled();
         runner.putProperty("test",stuff);
@@ -33,8 +47,14 @@ public class ScriptRunnerTest {
     }
     
     @Test public void
-    scope_includes_required_classes() throws IOException {
-    	ScriptRunner runner = new ScriptRunner(null, new ScriptStack());
+    scope_includes_required_classes() throws IOException, CoreException {
+    	final FileContentsReader fileReader = context.mock(FileContentsReader.class);
+    	
+    	context.checking(new Expectations() {{
+    		oneOf(fileReader).getContents(with(any(InputStream.class))); will(returnValue(""));
+    	}});
+
+    	ScriptRunner runner = new ScriptRunner(null, new ScriptStack(), fileReader);
     	assertThat(runner.getProperty("Load"), instanceOf(ScriptStack.class));
     	assertThat(runner.getProperty("TestResult"), instanceOf(TestResultPublisher.class));
     	assertThat(runner.getProperty("Alert"), instanceOf(Alerter.class));

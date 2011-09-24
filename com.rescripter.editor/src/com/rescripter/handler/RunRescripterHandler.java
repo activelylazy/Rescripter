@@ -33,7 +33,7 @@ public class RunRescripterHandler extends AbstractHandler {
 			
             ScriptStack scriptStack = new ScriptStack();
             FileContentsReader fileReader = new FileContentsReader();
-			ScriptRunner runner = new ScriptRunner(window, scriptStack);
+			ScriptRunner runner = new ScriptRunner(window, scriptStack, fileReader);
 			try {
 		    	WorkspaceScriptLoader loader = new WorkspaceScriptLoader(file, runner, scriptStack, fileReader);
 				scriptStack.push(loader);
