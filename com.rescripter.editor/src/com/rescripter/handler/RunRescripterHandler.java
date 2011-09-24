@@ -12,11 +12,8 @@ import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.part.FileEditorInput;
 
-import com.rescripter.resources.FileContentsReader;
-import com.rescripter.resources.WorkspaceScriptLoader;
 import com.rescripter.script.Alerter;
-import com.rescripter.script.ScriptRunner;
-import com.rescripter.script.ScriptStack;
+import com.rescripter.script.RunScript;
 
 public class RunRescripterHandler extends AbstractHandler {
 	public RunRescripterHandler() { }
@@ -30,17 +27,8 @@ public class RunRescripterHandler extends AbstractHandler {
             
             FileEditorInput fileEditorInput = (FileEditorInput) editorInput;
             IFile file = fileEditorInput.getFile();
-			
-            ScriptStack scriptStack = new ScriptStack();
-            FileContentsReader fileReader = new FileContentsReader();
-			ScriptRunner runner = new ScriptRunner(window, scriptStack, fileReader);
-			try {
-		    	WorkspaceScriptLoader loader = new WorkspaceScriptLoader(file, runner, scriptStack, fileReader);
-				scriptStack.push(loader);
-				runner.run(document.get(), editor.getTitle());
-			} finally {
-				runner.done();
-			}
+            
+            new RunScript(window).withContents(document.get(), file, editor.getTitle());
 			
 			return null;
 		} catch (Throwable t) {

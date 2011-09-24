@@ -64,6 +64,8 @@ public class ScriptRunner {
     }
 
 	public void done() {
-		debugMessage.done();
+		if (debugMessage != null) {
+			debugMessage.done();
+		}
 	}
 }
