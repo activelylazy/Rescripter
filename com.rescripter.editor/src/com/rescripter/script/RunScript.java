@@ -30,11 +30,11 @@ public class RunScript {
 		}
 	}
 	
-	void setScriptStack(ScriptStack scriptStack) {
+	public void setScriptStack(ScriptStack scriptStack) {
 		this.scriptStack = scriptStack;
 	}
 
-	void setScriptRunner(ScriptRunner runner) {
+	public void setScriptRunner(ScriptRunner runner) {
 		this.runner = runner;
 	}
 }

@@ -1,8 +1,8 @@
 package com.rescripter.script;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.is;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,7 +43,7 @@ public class ScriptRunnerTest {
         runner.putProperty("test",stuff);
         runner.run("test.call()","test source");
 
-        assertTrue(stuff.called);
+        assertThat(stuff.called, is(true));
     }
     
     @Test public void
