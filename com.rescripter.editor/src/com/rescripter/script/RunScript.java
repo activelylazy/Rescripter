@@ -11,16 +11,15 @@ import com.rescripter.resources.WorkspaceScriptLoader;
 
 public class RunScript {
 
-	private final IWorkbenchWindow window;
-
-	public RunScript(IWorkbenchWindow window) {
-		this.window = window;
+	private final ScriptStack scriptStack = new ScriptStack();
+	private final FileContentsReader fileReader = new FileContentsReader();
+	private ScriptRunner runner;
+	
+	public RunScript(IWorkbenchWindow window) throws IOException, CoreException {
+		this.runner = new ScriptRunner(window, scriptStack, fileReader);
 	}
 	
-	public void withContents(String contents, IFile file, String filename) throws IOException, CoreException {
-        ScriptStack scriptStack = new ScriptStack();
-        FileContentsReader fileReader = new FileContentsReader();
-		ScriptRunner runner = createScriptRunner(scriptStack, fileReader);
+	public void withContents(String contents, IFile file, String filename) {
 		try {
 	    	WorkspaceScriptLoader loader = new WorkspaceScriptLoader(file, runner, scriptStack, fileReader);
 			scriptStack.push(loader);
@@ -30,10 +29,7 @@ public class RunScript {
 		}
 	}
 
-	protected ScriptRunner createScriptRunner(ScriptStack scriptStack,
-											  FileContentsReader fileReader) throws IOException, CoreException 
-	{
-		return new ScriptRunner(window, scriptStack, fileReader);
+	void setScriptRunner(ScriptRunner runner) {
+		this.runner = runner;
 	}
-	
 }

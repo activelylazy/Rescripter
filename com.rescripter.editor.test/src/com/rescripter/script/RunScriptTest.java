@@ -10,8 +10,6 @@ import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 
-import com.rescripter.resources.FileContentsReader;
-
 public class RunScriptTest {
 
 	private Mockery context = new Mockery() {{ setImposteriser(ClassImposteriser.INSTANCE); }};
@@ -30,13 +28,8 @@ public class RunScriptTest {
 			oneOf(scriptRunner).done();
 		}});
 		
-		RunScript runScript = new RunScript(window) {
-			@Override protected ScriptRunner createScriptRunner(ScriptStack scriptStack,
-													  FileContentsReader fileReader) throws IOException, CoreException {
-				return scriptRunner;
-			}
-			
-		};
+		RunScript runScript = new RunScript(window);
+		runScript.setScriptRunner(scriptRunner);
 		
 		runScript.withContents(contents, file, filename);
 		
