@@ -11,7 +11,7 @@ import com.rescripter.resources.WorkspaceScriptLoader;
 
 public class RunScript {
 
-	private final ScriptStack scriptStack = new ScriptStack();
+	private ScriptStack scriptStack = new ScriptStack();
 	private final FileContentsReader fileReader = new FileContentsReader();
 	private ScriptRunner runner;
 	
@@ -24,9 +24,14 @@ public class RunScript {
 	    	WorkspaceScriptLoader loader = new WorkspaceScriptLoader(file, runner, scriptStack, fileReader);
 			scriptStack.push(loader);
 			runner.run(contents, filename);
+			scriptStack.pop();
 		} finally {
 			runner.done();
 		}
+	}
+	
+	void setScriptStack(ScriptStack scriptStack) {
+		this.scriptStack = scriptStack;
 	}
 
 	void setScriptRunner(ScriptRunner runner) {
