@@ -93,8 +93,80 @@ describe("easy mock method refactor", function() {
     });
 });
 
-describe("mock", function() {
+describe("create mock", function() {
+    it("should parse the ast and find a method invocation", function() {
+        var cu = "compilation unit",
+            reference = {
+                getElement : function() { return {
+                    getCompilationUnit : function() { return cu; }
+                } }
+            },
+            ast = "the ast",
+            node = a_node_of_type(org.eclipse.jdt.core.dom.MethodInvocation,
+                       a_node_of_type(org.eclipse.jdt.core.dom.VariableDeclarationFragment));
+        
+        spyOn(AST, "parseCompilationUnit").andReturn(ast);
+        spyOn(AST, "findCoveredNode").andReturn(node);
+        
+        var mock = new Mock(reference);
+    });
+    
+    it("should throw an error if not a method invocation", function() {
+        var cu = "compilation unit",
+            reference = {
+                getElement : function() { return {
+                    getCompilationUnit : function() { return cu; }
+                } }
+            },
+            ast = "the ast",
+            node = a_node_of_type("not a method invocation"),
+            mock;
+                
+        spyOn(AST, "parseCompilationUnit").andReturn(ast);
+        spyOn(AST, "findCoveredNode").andReturn(node);
+        
+        try {
+            new Mock(reference);
+            throw "Expected call to new Mock to throw error";
+        } catch (e) {
+            expect(e).toEqual("Assertion failed: createMock reference is not a MethodInvocation");
+        }
+    });
+    
+    it("should throw an error if parent type cannot be parsed", function() {
+        var cu = "compilation unit",
+            reference = {
+                getElement : function() { return {
+                    getCompilationUnit : function() { return cu; }
+                } }
+            },
+            ast = "the ast",
+            node = a_node_of_type(org.eclipse.jdt.core.dom.MethodInvocation,
+                       a_node_of_type("not a variable declaration"));
+        
+        spyOn(AST, "parseCompilationUnit").andReturn(ast);
+        spyOn(AST, "findCoveredNode").andReturn(node);
+        
+        try {
+            new Mock(reference);
+            throw "Expected call to new Mock to throw error";
+        } catch (e) {
+            expect(e).toEqual("Cannot parse createMock reference in a node of type not a variable declaration");
+        }
+    }); 
 });
+
+function a_node_of_type(type, parent) {
+    return {
+	    getClass : function() { return {
+	        isAssignableFrom : function(theType) {
+	            return type === theType;
+	        }
+	    } },
+	    getParent : function() { return parent; },
+	    toString : function() { return "a node of type " + type; }
+	};
+}
 
 function an_element_in(type) {
     return {

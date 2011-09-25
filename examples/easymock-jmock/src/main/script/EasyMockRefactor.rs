@@ -34,17 +34,16 @@ EasyMockMethodRefactor.prototype.refactor = function() {
 
 
 var Mock = function(reference) {
-//    var s = reference.getElement().getCompilationUnit().getSource().substring(reference.offset, reference.offset+reference.length);
-//    Debug.message("It's: "+s);
+    var ast = AST.parseCompilationUnit(reference.getElement().getCompilationUnit());
+    var node = AST.findCoveredNode(ast, reference.offset, reference.length);
 
-    var parser = org.eclipse.jdt.core.dom.ASTParser.newParser(org.eclipse.jdt.core.dom.AST.JLS3);
-    parser.setKind(org.eclipse.jdt.core.dom.ASTParser.K_COMPILATION_UNIT);
-    parser.setSource(reference.getElement().getCompilationUnit());
-    parser.setResolveBindings(true);
+    assert(node.getClass().isAssignableFrom(org.eclipse.jdt.core.dom.MethodInvocation), "createMock reference is not a MethodInvocation");
+
+    var parent = node.getParent();
+    if (parent.getClass().isAssignableFrom(org.eclipse.jdt.core.dom.VariableDeclarationFragment)) {
+        
+        return;
+    }
     
-    var ast = parser.createAST(null);
-    
-    var node = org.eclipse.jdt.core.dom.NodeFinder.perform(ast, reference.offset, reference.length);
-    
-    Debug.message("Found "+node+" - which is a "+node.getClass().getName());
+    throw "Cannot parse createMock reference in "+parent;
 }

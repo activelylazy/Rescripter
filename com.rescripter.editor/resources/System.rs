@@ -1,5 +1,6 @@
 
 Load.file("Find.rs");
+Load.file("AST.rs");
 
 var Search = function() { };
 
@@ -176,6 +177,12 @@ function filter(from, test) {
 		}		
 	}
 	return results;
+}
+
+function assert(test, msg) {
+    if (!test) {
+        throw "Assertion failed: " + msg;
+    }
 }
 
 var Refactor = {
