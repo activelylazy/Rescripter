@@ -1,0 +1,3 @@
+
+Find.typeByName("Person");
+

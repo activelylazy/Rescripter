@@ -11,6 +11,8 @@ Require-Bundle: com.rescripter.jmock,
  org.eclipse.core.runtime,
  org.eclipse.jface.text,
  org.eclipse.ui.ide,
+ org.eclipse.jdt.core,
+ org.eclipse.jdt.ui,
  org.junit4
 Comment: org.junit must be after jmock, so Hamcrest 1.2 is used instead of 1.1 which comes with JUnit.
 Bundle-ActivationPolicy: lazy
