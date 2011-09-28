@@ -19,12 +19,16 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
+import org.junit.Before;
 import org.junit.Test;
 
 public class RescripterIntegrationTest {
 
-	@Test public void
-	loads_files() throws CoreException, InterruptedException, IOException {
+	private IJavaProject javaProject;
+
+	@Before public void 
+	create_java_project() throws CoreException {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("Test");
 		project.create(null);
 		project.open(null);
@@ -33,7 +37,7 @@ public class RescripterIntegrationTest {
 		description.setNatureIds(new String[] { JavaCore.NATURE_ID });
 		project.setDescription(description, null);
 		
-		IJavaProject javaProject = JavaCore.create(project);
+		javaProject = JavaCore.create(project);
 		
 		javaProject.setOutputLocation(project.getFolder("bin").getFullPath(), null);
 		List<IClasspathEntry> classpaths = new ArrayList<IClasspathEntry>();
@@ -44,7 +48,10 @@ public class RescripterIntegrationTest {
 		IFile file = project.getFile(new Path("/src/com/example/Person.java"));
 		createFile(file,
 				getClass().getResourceAsStream("/com/example/Person.jav"));
-		
+	}
+	
+	@Test public void
+	loads_files() throws JavaModelException {
 		assertThat(javaProject.findType("com.example.Person"), is(notNullValue()));
 	}
 
