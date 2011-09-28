@@ -62,4 +62,20 @@ public class ScriptRunnerTest {
     	assertThat(runner.getProperty("ChangeText"), instanceOf(ChangeText.class));
     	assertThat(runner.getProperty("ASTTokenFinder"), instanceOf(ASTTokenFinder.class));
     }
+    
+    @Test public void
+    get_property_returns_variables_written_from_script() throws IOException, CoreException {
+    	final FileContentsReader fileReader = context.mock(FileContentsReader.class);
+    	
+    	context.checking(new Expectations() {{
+    		oneOf(fileReader).getContents(with(any(InputStream.class))); will(returnValue(""));
+    	}});
+    	
+    	ScriptRunner runner = new ScriptRunner(null, new ScriptStack(), fileReader);
+    	
+    	runner.run("var response = 42", "inline script");
+    	
+    	assertThat((Integer) runner.getProperty("response"), is(42));
+    }
+    
 }
