@@ -6,6 +6,8 @@ import static org.hamcrest.Matchers.notNullValue;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -14,6 +16,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.junit.Test;
@@ -32,7 +35,13 @@ public class RescripterIntegrationTest {
 		
 		IJavaProject javaProject = JavaCore.create(project);
 		
-		IFile file = project.getFile(new Path("/com/example/Person.java"));
+		javaProject.setOutputLocation(new Path("/Test/bin"), null);
+		List<IClasspathEntry> classpaths = new ArrayList<IClasspathEntry>();
+		classpaths.add(JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER")));
+		classpaths.add(JavaCore.newSourceEntry(new Path("/Test/src")));
+		javaProject.setRawClasspath(classpaths.toArray(new IClasspathEntry[0]), null);
+		
+		IFile file = project.getFile(new Path("/src/com/example/Person.java"));
 		createFile(file,
 				getClass().getResourceAsStream("/com/example/Person.jav"));
 		
