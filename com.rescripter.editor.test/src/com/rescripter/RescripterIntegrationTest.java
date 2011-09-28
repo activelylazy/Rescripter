@@ -35,10 +35,10 @@ public class RescripterIntegrationTest {
 		
 		IJavaProject javaProject = JavaCore.create(project);
 		
-		javaProject.setOutputLocation(new Path("/Test/bin"), null);
+		javaProject.setOutputLocation(project.getFolder("bin").getFullPath(), null);
 		List<IClasspathEntry> classpaths = new ArrayList<IClasspathEntry>();
 		classpaths.add(JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER")));
-		classpaths.add(JavaCore.newSourceEntry(new Path("/Test/src")));
+		classpaths.add(JavaCore.newSourceEntry(project.getFolder("src").getFullPath()));
 		javaProject.setRawClasspath(classpaths.toArray(new IClasspathEntry[0]), null);
 		
 		IFile file = project.getFile(new Path("/src/com/example/Person.java"));
