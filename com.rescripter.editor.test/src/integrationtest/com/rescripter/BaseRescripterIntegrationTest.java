@@ -18,6 +18,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
+import org.junit.After;
 import org.junit.Before;
 
 abstract public class BaseRescripterIntegrationTest {
@@ -50,6 +51,11 @@ abstract public class BaseRescripterIntegrationTest {
 		IFile file = project.getFile(new Path("/src/com/example/Person.java"));
 		createFile(file,
 				getClass().getResourceAsStream("/com/example/Person.jav"));
+	}
+	
+	@After public void
+	close_java_project() throws CoreException {
+		javaProject.getProject().close(null);
 	}
 	
 	protected IWorkbenchWindow getWindow() { return window; }

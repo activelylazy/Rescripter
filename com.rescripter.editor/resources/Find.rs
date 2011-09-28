@@ -12,6 +12,7 @@ Find.methodByName = function(type, methodName) {
             return methods[i];
         }
     }
+    throw "Could not find method "+methodName+" on "+type.getName();
 }
 
 Find.methodsByName = function(type, methodName) {

@@ -25,4 +25,20 @@ public class FindIntegrationTest extends BaseRescripterIntegrationTest {
 		runScript.withContents("var person = Find.typeByName('NotAPerson');\n", null, "inline script");
 	}
 
+	@Test public void
+	finds_method_by_name() throws IOException, CoreException {
+		RunScript runScript = new RunScript(getWindow());
+		runScript.withContents(
+				"var person = Find.typeByName('Person');\n" +
+				"var getName = Find.methodByName(person, 'getName');\n", null, "inline script");
+		assertThat(runScript.getProperty("getName"), is(notNullValue()));
+	}
+
+	@Test(expected=Exception.class) public void
+	fails_to_find_missing_method_by_name() throws IOException, CoreException {
+		RunScript runScript = new RunScript(getWindow());
+		runScript.withContents(
+				"var person = Find.typeByName('Person');\n" +
+				"var getName = Find.methodByName(person, 'noSuchGetName');\n", null, "inline script");
+	}
 }
