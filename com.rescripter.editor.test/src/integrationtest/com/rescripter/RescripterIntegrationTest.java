@@ -22,15 +22,12 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.rescripter.script.RunScript;
-import com.rescripter.script.ScriptRunner;
-import com.rescripter.script.ScriptStack;
 
 public class RescripterIntegrationTest {
 
@@ -80,7 +77,7 @@ public class RescripterIntegrationTest {
 		runScript.withContents("var response = 42;\n", null, "inline script");
 		assertThat((Integer) runScript.getProperty("response"), is(42));
 	}
-
+	
 	private void createFile(IFile file, InputStream in) throws CoreException {
 		if (file.exists()) {
 			return;

@@ -30,6 +30,10 @@ public class RunScript {
 		}
 	}
 	
+	public Object getProperty(String name) {
+		return runner.getProperty(name);
+	}
+	
 	public void setScriptStack(ScriptStack scriptStack) {
 		this.scriptStack = scriptStack;
 	}
