@@ -4,9 +4,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -19,16 +21,34 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.rescripter.script.RunScript;
+import com.rescripter.script.ScriptRunner;
+import com.rescripter.script.ScriptStack;
+
 public class RescripterIntegrationTest {
 
+	private final Mockery context = new Mockery() {{ setImposteriser(ClassImposteriser.INSTANCE); }};
+	private final IWorkbenchWindow window = context.mock(IWorkbenchWindow.class);
+	
 	private IJavaProject javaProject;
 
+	@Before public void
+	setup_workbench_window() {
+	}
+	
 	@Before public void 
 	create_java_project() throws CoreException {
-		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("Test");
+		String projectName = generateProjectName();
+		System.out.println("Creating project " + projectName);
+		
+		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
 		project.create(null);
 		project.open(null);
 		
@@ -50,8 +70,14 @@ public class RescripterIntegrationTest {
 	}
 	
 	@Test public void
-	loads_files() throws JavaModelException {
+	populates_java_project() throws JavaModelException {
 		assertThat(javaProject.findType("com.example.Person"), is(notNullValue()));
+	}
+	
+	@Test public void
+	runs_basic_script() throws IOException, CoreException {
+		RunScript runScript = new RunScript(window);
+		runScript.withContents("var response = 42;\n", null, "inline script");
 	}
 
 	private void createFile(IFile file, InputStream in) throws CoreException {
@@ -69,5 +95,9 @@ public class RescripterIntegrationTest {
 			createFolder((IFolder) parent.getParent());
 		}
 		parent.create(false, false, null);
+	}
+	
+	private static String generateProjectName() {
+		return "Test-" + UUID.randomUUID().toString();
 	}
 }
