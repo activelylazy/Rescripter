@@ -78,6 +78,7 @@ public class RescripterIntegrationTest {
 	runs_basic_script() throws IOException, CoreException {
 		RunScript runScript = new RunScript(window);
 		runScript.withContents("var response = 42;\n", null, "inline script");
+		assertThat((Integer) runScript.getProperty("response"), is(42));
 	}
 
 	private void createFile(IFile file, InputStream in) throws CoreException {
