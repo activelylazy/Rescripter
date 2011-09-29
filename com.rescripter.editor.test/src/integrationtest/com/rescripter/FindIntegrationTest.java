@@ -7,7 +7,9 @@ import static org.hamcrest.Matchers.notNullValue;
 import java.io.IOException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IType;
 import org.junit.Test;
+import org.mozilla.javascript.NativeJavaObject;
 
 import com.rescripter.script.RunScript;
 
@@ -16,7 +18,10 @@ public class FindIntegrationTest extends BaseRescripterIntegrationTest {
 	finds_types_by_name() throws IOException, CoreException {
 		RunScript runScript = new RunScript(getWindow());
 		runScript.withContents("var person = Find.typeByName('Person');\n", null, "inline script");
-		assertThat(runScript.getProperty("person"), is(notNullValue()));
+		NativeJavaObject o = (NativeJavaObject) runScript.getProperty("person");
+		IType type = (IType) o.unwrap();
+		assertThat(type, is(notNullValue()));
+		assertThat(type, is(getJavaProject().findType("com.example.Person")));
 	}
 	
 	@Test(expected=Exception.class) public void

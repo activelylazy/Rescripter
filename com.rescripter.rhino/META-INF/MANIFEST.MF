@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Rhino Dependencies
+Bundle-SymbolicName: com.rescripter.rhino;singleton:=true
+Bundle-Version: 1.0.7.qualifier
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ClassPath: lib/rhino-1.7R2.jar
+Export-Package: org.mozilla.javascript

@@ -4,6 +4,7 @@ Bundle-Name: RescripterEditorTests
 Bundle-SymbolicName: com.rescripter.editor.test;singleton:=true
 Bundle-Version: 1.0.7.qualifier
 Require-Bundle: com.rescripter.jmock,
+ com.rescripter.rhino,
  com.rescripter.editor,
  org.eclipse.ui,
  org.eclipse.ui.editors,

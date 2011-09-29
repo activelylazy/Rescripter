@@ -150,6 +150,7 @@
     </profiles>
 
     <modules>
+    	<module>com.rescripter.rhino</module>
         <module>com.rescripter.jmock</module>
         <module>com.rescripter.editor</module>
         <module>com.rescripter.editor.test</module>

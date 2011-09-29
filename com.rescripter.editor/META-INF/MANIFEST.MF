@@ -4,7 +4,8 @@ Bundle-Name: RescripterEditor
 Bundle-SymbolicName: com.rescripter.editor;singleton:=true
 Bundle-Version: 1.0.7.qualifier
 Bundle-Activator: com.rescripter.Activator
-Require-Bundle: org.eclipse.ui,
+Require-Bundle: com.rescripter.rhino,
+ org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.jface.text,
  org.eclipse.ui.editors,
@@ -15,8 +16,7 @@ Require-Bundle: org.eclipse.ui,
 Comment: org.eclipse.jdt.core is available staring from Eclipse 3.5.0
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Bundle-ClassPath: lib/rhino-1.7R2.jar,
- .,
+Bundle-ClassPath: .,
  resources/
 Export-Package: com.rescripter.handler,
  com.rescripter.resources,
