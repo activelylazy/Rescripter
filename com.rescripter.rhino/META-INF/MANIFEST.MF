@@ -4,5 +4,15 @@ Bundle-Name: Rhino Dependencies
 Bundle-SymbolicName: com.rescripter.rhino;singleton:=true
 Bundle-Version: 1.0.7.qualifier
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.jface.text,
+ org.eclipse.ui.editors,
+ org.eclipse.ui.console,
+ org.eclipse.core.resources,
+ org.eclipse.jdt.core,
+ org.eclipse.ui.ide
+Comment: any classes we want to access from javascript must be in required bundles above
 Bundle-ClassPath: lib/rhino-1.7R2.jar
-Export-Package: org.mozilla.javascript
+Export-Package: org.mozilla.javascript,
+ org.mozilla.classfile
