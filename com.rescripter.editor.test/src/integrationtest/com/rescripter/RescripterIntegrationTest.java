@@ -23,7 +23,7 @@ public class RescripterIntegrationTest extends BaseRescripterIntegrationTest {
 	runs_basic_script() throws IOException, CoreException {
 		RunScript runScript = new RunScript(getWindow());
 		runScript.withContents("var response = 42;\n", null, "inline script");
-		assertThat((Integer) runScript.getProperty("response"), is(42));
+		assertThat(runScript.getIntegerProperty("response"), is(42));
 	}
 	
 }

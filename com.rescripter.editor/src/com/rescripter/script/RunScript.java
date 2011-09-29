@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.mozilla.javascript.NativeJavaObject;
 
 import com.rescripter.resources.FileContentsReader;
 import com.rescripter.resources.WorkspaceScriptLoader;
@@ -32,6 +33,19 @@ public class RunScript {
 	
 	public Object getProperty(String name) {
 		return runner.getProperty(name);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <T> T getProperty(Class<T> clazz, String name) {
+		return (T) ((NativeJavaObject) getProperty(name)).unwrap();
+	}
+	
+	public Integer getIntegerProperty(String name) {
+		return (Integer) getProperty(name);
+	}
+	
+	public String getStringProperty(String name) {
+		return (String) getProperty(name);
 	}
 	
 	public void setScriptStack(ScriptStack scriptStack) {
