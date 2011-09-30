@@ -41,7 +41,9 @@ var Mock = function(reference) {
 
     var parent = node.getParent();
     if (parent.getClass().isAssignableFrom(org.eclipse.jdt.core.dom.VariableDeclarationFragment)) {
-        
+        this.name = "" + parent.getName();
+        this.type = parent.getParent().getType(); 
+                        
         return;
     }
     

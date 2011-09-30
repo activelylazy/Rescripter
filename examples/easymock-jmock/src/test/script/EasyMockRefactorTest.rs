@@ -103,7 +103,8 @@ describe("create mock", function() {
             },
             ast = "the ast",
             node = a_node_of_type(org.eclipse.jdt.core.dom.MethodInvocation,
-                       a_node_of_type(org.eclipse.jdt.core.dom.VariableDeclarationFragment));
+                       a_variable_declaration_fragment("no name",
+                           a_variable_declaration_statement("no type")));
         
         spyOn(AST, "parseCompilationUnit").andReturn(ast);
         spyOn(AST, "findCoveredNode").andReturn(node);
@@ -153,8 +154,49 @@ describe("create mock", function() {
         } catch (e) {
             expect(e).toEqual("Cannot parse createMock reference in a node of type not a variable declaration");
         }
+    });
+    
+    it("should extract the name & type from a variable declaration", function() {
+        var cu = "compilation unit",
+            reference = {
+                getElement : function() { return {
+                    getCompilationUnit : function() { return cu; }
+                } }
+            },
+            ast = "the ast",
+            node = a_node_of_type(org.eclipse.jdt.core.dom.MethodInvocation,
+                       a_variable_declaration_fragment("theField",
+                           a_variable_declaration_statement("theMockType")));
+            
+        spyOn(AST, "parseCompilationUnit").andReturn(ast);
+        spyOn(AST, "findCoveredNode").andReturn(node);
+
+        var mock = new Mock(reference);
+        
+        expect(mock.name).toEqual("theField");
+        expect(mock.type.getName()).toEqual("theMockType");
     }); 
 });
+
+function a_variable_declaration_fragment(name, parent) {
+    var node = a_node_of_type(org.eclipse.jdt.core.dom.VariableDeclarationFragment, parent);
+    node.getName = function() {
+        return name;
+    }
+    return node;
+}
+
+function a_variable_declaration_statement(type, parent) {
+    var node = a_node_of_type(org.eclipse.jdt.core.dom.VariableDeclarationStatement, parent);
+    node.getType = function() {
+        return {
+            getName : function() {
+                return type;
+            }
+        };
+    };
+    return node;
+}
 
 function a_node_of_type(type, parent) {
     return {
