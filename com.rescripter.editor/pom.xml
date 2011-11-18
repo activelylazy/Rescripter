@@ -4,7 +4,7 @@
 
     <parent>
         <groupId>com.rescripter</groupId>
-        <artifactId>Rescripter</artifactId>
+        <artifactId>com.rescripter.parent</artifactId>
         <version>1.0.7-SNAPSHOT</version>
     </parent>
 
