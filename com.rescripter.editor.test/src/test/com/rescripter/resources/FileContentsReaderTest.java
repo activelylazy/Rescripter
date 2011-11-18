@@ -7,13 +7,12 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.eclipse.core.runtime.CoreException;
 import org.junit.Test;
 
 public class FileContentsReaderTest {
 	
 	@Test public void
-	reads_contents_of_a_stream() throws IOException, CoreException {
+	reads_contents_of_a_stream() throws IOException {
 		String contents = "first line\nof the contents\n";
 		final InputStream inputStream = new ByteArrayInputStream(contents.getBytes());
 		
@@ -24,7 +23,7 @@ public class FileContentsReaderTest {
 	}
 	
 	@Test public void
-	reads_windows_format_file_contents() throws IOException, CoreException {
+	reads_windows_format_file_contents() throws IOException {
 		String contents = "first line\r\nof the contents\r\n";
 		final InputStream inputStream = new ByteArrayInputStream(contents.getBytes());
 		
@@ -35,7 +34,7 @@ public class FileContentsReaderTest {
 	}
 	
 	@Test public void
-	appends_cr_to_contents() throws IOException, CoreException {
+	appends_cr_to_contents() throws IOException {
 		String contents = "contents";
 		final InputStream inputStream = new ByteArrayInputStream(contents.getBytes());
 		

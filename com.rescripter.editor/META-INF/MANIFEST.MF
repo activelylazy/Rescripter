@@ -18,7 +18,3 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: .,
  resources/
-Export-Package: com.rescripter.handler,
- com.rescripter.resources,
- com.rescripter.script,
- com.rescripter.syntax

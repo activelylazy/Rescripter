@@ -2,8 +2,6 @@ package com.rescripter.resources;
 
 import java.io.IOException;
 
-import org.eclipse.core.runtime.CoreException;
-
 import com.rescripter.script.ScriptRunner;
 import com.rescripter.script.ScriptStack;
 
@@ -21,7 +19,7 @@ public class ClasspathScriptLoader implements ScriptLoader {
 		this.fileReader = fileReader;
 	}
 	
-	public void file(String filename) throws IOException, CoreException {
+	public void file(String filename) throws IOException {
         String contents = fileReader.getContents(getClass().getClassLoader().getResourceAsStream(filename));
 
     	scriptStack.push(new ClasspathScriptLoader(scriptRunner, scriptStack, fileReader));

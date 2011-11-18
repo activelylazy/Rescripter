@@ -6,7 +6,6 @@ import static org.hamcrest.Matchers.notNullValue;
 
 import java.io.IOException;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.junit.Test;
 
@@ -20,7 +19,7 @@ public class RescripterIntegrationTest extends BaseRescripterIntegrationTest {
 	}
 	
 	@Test public void
-	runs_basic_script() throws IOException, CoreException {
+	runs_basic_script() throws IOException {
 		RunScript runScript = new RunScript(getWindow());
 		runScript.withContents("var response = 42;\n", null, "inline script");
 		assertThat(runScript.getIntegerProperty("response"), is(42));

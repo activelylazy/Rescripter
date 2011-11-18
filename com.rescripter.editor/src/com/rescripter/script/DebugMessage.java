@@ -7,20 +7,24 @@ import org.eclipse.jdt.core.ISourceRange;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
+import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
+
+import com.rescripter.Activator;
 
 public class DebugMessage {
 
 	private MessageConsoleStream stream;
-	private static MessageConsole console = new MessageConsole("Rescripter Debug", null);
+	private static final MessageConsole console = new MessageConsole("Rescripter Debug", null);
+	private static final IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
 	
 	static {
-		ConsolePlugin.getDefault().getConsoleManager().addConsoles(new IConsole[] { console });
+		consoleManager.addConsoles(new IConsole[] { console });
 	}
 
 	public DebugMessage() {
-		ConsolePlugin.getDefault().getConsoleManager().showConsoleView(console);
+		consoleManager.showConsoleView(console);
 		stream = console.newMessageStream();
 	}
 	
@@ -36,7 +40,7 @@ public class DebugMessage {
 		try {
 			stream.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			Activator.warn(e);
 		}
 	}
 }

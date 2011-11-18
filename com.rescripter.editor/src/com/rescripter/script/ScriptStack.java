@@ -9,7 +9,7 @@ import com.rescripter.resources.ScriptLoader;
 
 public class ScriptStack implements ScriptLoader {
 
-	private Stack<ScriptLoader> stack = new Stack<ScriptLoader>();
+	private final Stack<ScriptLoader> stack = new Stack<ScriptLoader>();
 	
 	public void file(String filename) throws IOException, CoreException {
 		peek().file(filename);

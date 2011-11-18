@@ -3,7 +3,6 @@ package com.rescripter.script;
 import java.io.IOException;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.mozilla.javascript.NativeJavaObject;
 
@@ -16,7 +15,7 @@ public class RunScript {
 	private final FileContentsReader fileReader = new FileContentsReader();
 	private ScriptRunner runner;
 	
-	public RunScript(IWorkbenchWindow window) throws IOException, CoreException {
+	public RunScript(IWorkbenchWindow window) throws IOException {
 		this.runner = new ScriptRunner(window, scriptStack, fileReader);
 	}
 	

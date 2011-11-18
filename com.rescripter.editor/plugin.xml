@@ -52,7 +52,7 @@
       <menuContribution
             locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
          <toolbar
-               id="EditorTest.toolbars.runVSToolbar">
+               id="com.rescripter.editor.toolbars.runVSToolbar">
             <command
                   commandId="Rescripter.commands.runScriptCommand"
                   icon="icons/sample.gif"

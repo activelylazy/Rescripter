@@ -10,8 +10,8 @@ import com.rescripter.script.TestResult;
 
 final class TestResultLabelProvider implements ILabelProvider, IColorProvider {
 
-	private Color red;
-	private Color green;
+	private final Color red;
+	private final Color green;
 
 	public TestResultLabelProvider() {
 		this.red = new Color(null, 128, 0, 0);
@@ -46,7 +46,6 @@ final class TestResultLabelProvider implements ILabelProvider, IColorProvider {
 	}
 
 	public Color getBackground(Object element) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

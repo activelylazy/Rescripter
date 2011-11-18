@@ -45,6 +45,7 @@ public class WorkspaceScriptLoader implements ScriptLoader {
 		return location;
 	}
 
+	@Override
 	public String toString() {
 		return "a workspace script loader";
 	}
