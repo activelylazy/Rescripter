@@ -19,7 +19,7 @@
 
     <ciManagement>
         <system>Jenkins</system>
-        <url>https://codecop.ci.cloudbees.com/job/${project.artifactId}/</url>
+        <url>https://codecop.ci.cloudbees.com/job/Rescripter/</url>
     </ciManagement>
 
     <inceptionYear>2011</inceptionYear>
@@ -147,6 +147,19 @@
                 <platform-version>[3.7,3.8)</platform-version>
             </properties>
         </profile>
+        <profile>
+            <id>platform-juno</id>
+            <activation>
+                <property>
+                    <name>platform-version-name</name>
+                    <value>juno</value>
+                </property>
+            </activation>
+            <properties>
+                <eclipse-site>http://download.eclipse.org/releases/juno</eclipse-site>
+                <platform-version>[3.8,3.9)</platform-version>
+            </properties>
+        </profile>
     </profiles>
 
     <modules>
@@ -167,9 +180,14 @@
     </repositories>
 
     <properties>
-        <tycho-version>0.13.0</tycho-version>
-        <platform-version-name>galileo</platform-version-name>
-        <eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
+        <tycho-version>0.14.0</tycho-version>
+        <!--
+             use mvn3 clean verify -Dplatform-version-name=number
+             with 3.5, 3.6, 3.7, 3.8milestones, 3.8, 4.0, 4.1, 4.2-I-builds
+             see http://wiki.eclipse.org/Eclipse_Project_Update_Sites what's available
+        -->
+        <platform-version-name>3.5</platform-version-name>
+        <eclipse-site>http://download.eclipse.org/eclipse/updates/${platform-version-name}</eclipse-site>
     </properties>
 
 </project>
