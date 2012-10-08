@@ -76,6 +76,7 @@
                 <version>${tycho-version}</version>
                 <configuration>
                     <resolver>p2</resolver>
+                    <pomDependencies>consider</pomDependencies>
                 </configuration>
             </plugin>
         </plugins>
@@ -86,7 +87,10 @@
                     <artifactId>tycho-compiler-plugin</artifactId>
                     <version>${tycho-version}</version>
                     <configuration>
-                        <encoding>UTF-8</encoding>
+                        <compilerVersion>${project.build.java.target}</compilerVersion>
+                        <encoding>${project.build.sourceEncoding}</encoding>
+                        <source>${project.build.java.target}</source>
+                        <target>${project.build.java.target}</target>
                     </configuration>
                 </plugin>
                 <!-- enable source bundle generation -->
@@ -98,9 +102,9 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
-                    <version>2.4.1</version>
+                    <version>2.5</version>
                     <configuration>
-                        <encoding>UTF-8</encoding>
+                        <encoding>${project.build.sourceEncoding}</encoding>
                     </configuration>
                 </plugin>
             </plugins>
@@ -111,14 +115,10 @@
         <profile>
             <id>platform-galileo</id>
             <activation>
-                <property>
-                    <name>platform-version-name</name>
-                    <value>galileo</value>
-                </property>
+                <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <eclipse-site>http://download.eclipse.org/releases/galileo</eclipse-site>
-                <platform-version>[3.5,3.6)</platform-version>
+                <eclipse-p2>http://download.eclipse.org/releases/galileo</eclipse-p2>
             </properties>
         </profile>
         <profile>
@@ -129,10 +129,6 @@
                     <value>helios</value>
                 </property>
             </activation>
-            <properties>
-                <eclipse-site>http://download.eclipse.org/releases/helios</eclipse-site>
-                <platform-version>[3.6,3.7)</platform-version>
-            </properties>
         </profile>
         <profile>
             <id>platform-indigo</id>
@@ -142,10 +138,6 @@
                     <value>indigo</value>
                 </property>
             </activation>
-            <properties>
-                <eclipse-site>http://download.eclipse.org/releases/indigo</eclipse-site>
-                <platform-version>[3.7,3.8)</platform-version>
-            </properties>
         </profile>
         <profile>
             <id>platform-juno</id>
@@ -155,10 +147,6 @@
                     <value>juno</value>
                 </property>
             </activation>
-            <properties>
-                <eclipse-site>http://download.eclipse.org/releases/juno</eclipse-site>
-                <platform-version>[3.8,3.9)</platform-version>
-            </properties>
         </profile>
     </profiles>
 
@@ -173,21 +161,23 @@
 
     <repositories>
         <repository>
-            <id>helios</id>
+            <id>Eclipse</id>
             <layout>p2</layout>
-            <url>${eclipse-site}</url>
+            <url>${eclipse-p2}</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
     <properties>
-        <tycho-version>0.14.0</tycho-version>
-        <!--
-             use mvn3 clean verify -Dplatform-version-name=number
-             with 3.5, 3.6, 3.7, 3.8milestones, 3.8, 4.0, 4.1, 4.2-I-builds
-             see http://wiki.eclipse.org/Eclipse_Project_Update_Sites what's available
-        -->
-        <platform-version-name>3.5</platform-version-name>
-        <eclipse-site>http://download.eclipse.org/eclipse/updates/${platform-version-name}</eclipse-site>
+        <tycho-version>0.15.0</tycho-version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.java.target>1.5</project.build.java.target>
+        <eclipse-p2>http://download.eclipse.org/releases/${platform-version-name}</eclipse-p2>
     </properties>
 
 </project>
