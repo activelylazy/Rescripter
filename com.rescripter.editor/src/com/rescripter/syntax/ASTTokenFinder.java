@@ -27,13 +27,13 @@ public class ASTTokenFinder {
                 }
             }
         } catch (InvalidInputException e) {
-            throw new RuntimeException("Error finding token: "+e.getMessage(), e);
+            throw new IllegalArgumentException("Error finding token: "+e.getMessage(), e);
         }
         
         return null;
     }
     
-    public static interface FoundToken {
+    public interface FoundToken {
         void found(int tokenType, int offset, int length);
     }
     
@@ -58,7 +58,7 @@ public class ASTTokenFinder {
  */
 class SourceRange implements ISourceRange {
 
-	protected final int offset, length;
+	private final int offset, length;
 
 	public SourceRange(int offset, int length) {
 		this.offset = offset;

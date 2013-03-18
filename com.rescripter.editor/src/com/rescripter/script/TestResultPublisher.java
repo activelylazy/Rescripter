@@ -10,8 +10,8 @@ import com.rescripter.views.TestResultView;
 
 public class TestResultPublisher {
 	
-	private int numSpecsStarted = 0;
-	private int numSpecsInError = 0;
+	private int numSpecsStarted;
+	private int numSpecsInError;
 	
 	private List<TestResult> results = new ArrayList<TestResult>();
 
@@ -22,7 +22,7 @@ public class TestResultPublisher {
 		numSpecsInError = 0;
 	}
 	
-	public synchronized void specStarted() throws PartInitException {
+	public synchronized void specStarted() {
 		numSpecsStarted++;
 	}
 	

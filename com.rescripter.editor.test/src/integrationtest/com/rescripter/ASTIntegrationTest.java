@@ -23,7 +23,7 @@ import com.rescripter.script.RunScript;
 public class ASTIntegrationTest extends BaseRescripterIntegrationTest {
 	
 	@Test public void
-	parses_compilation_unit() throws IOException, CoreException {
+	parses_compilation_unit() throws IOException {
 		RunScript runScript = new RunScript(getWindow());
 		runScript.withContents(
 		    "var person = Find.typeByName('Person');\n" + 
@@ -68,8 +68,8 @@ public class ASTIntegrationTest extends BaseRescripterIntegrationTest {
 		
 		private ASTNodeMatcher() { }
 		
-		public ASTNodeMatcher with_text_representation(String text) {
-			this.text = text;
+		public ASTNodeMatcher with_text_representation(String textRepresentation) {
+			this.text = textRepresentation;
 			return this;
 		}
 

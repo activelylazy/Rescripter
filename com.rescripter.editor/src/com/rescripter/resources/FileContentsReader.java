@@ -5,12 +5,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 
-import org.eclipse.core.runtime.CoreException;
-
 public class FileContentsReader {
 
-	public String getContents(InputStream inputStream) throws IOException, CoreException {
-        StringBuffer buff = new StringBuffer();
+	public String getContents(InputStream inputStream) throws IOException {
+        StringBuilder buff = new StringBuilder();
         LineNumberReader in = new LineNumberReader(new InputStreamReader(inputStream));
         try {
             String line;

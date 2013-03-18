@@ -7,7 +7,6 @@ import static org.hamcrest.Matchers.is;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.eclipse.core.runtime.CoreException;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -30,7 +29,7 @@ public class ScriptRunnerTest {
     }
     
     @Test public void
-    runs_script() throws IOException, CoreException {
+    runs_script() throws IOException {
     	final FileContentsReader fileReader = context.mock(FileContentsReader.class);
     	
     	context.checking(new Expectations() {{
@@ -47,7 +46,7 @@ public class ScriptRunnerTest {
     }
     
     @Test public void
-    scope_includes_required_classes() throws IOException, CoreException {
+    scope_includes_required_classes() throws IOException {
     	final FileContentsReader fileReader = context.mock(FileContentsReader.class);
     	
     	context.checking(new Expectations() {{
@@ -64,7 +63,7 @@ public class ScriptRunnerTest {
     }
     
     @Test public void
-    get_property_returns_variables_written_from_script() throws IOException, CoreException {
+    get_property_returns_variables_written_from_script() throws IOException {
     	final FileContentsReader fileReader = context.mock(FileContentsReader.class);
     	
     	context.checking(new Expectations() {{

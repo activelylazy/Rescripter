@@ -24,13 +24,13 @@ public class FindIntegrationTest extends BaseRescripterIntegrationTest {
 	}
 	
 	@Test(expected=Exception.class) public void
-	fails_to_find_missing_type_by_name() throws IOException, CoreException {
+	fails_to_find_missing_type_by_name() throws IOException {
 		RunScript runScript = new RunScript(getWindow());
 		runScript.withContents("var person = Find.typeByName('NotAPerson');\n", null, "inline script");
 	}
 
 	@Test public void
-	finds_method_by_name() throws IOException, CoreException {
+	finds_method_by_name() throws IOException {
 		RunScript runScript = new RunScript(getWindow());
 		runScript.withContents(
 				"var person = Find.typeByName('Person');\n" +
@@ -39,7 +39,7 @@ public class FindIntegrationTest extends BaseRescripterIntegrationTest {
 	}
 
 	@Test(expected=Exception.class) public void
-	fails_to_find_missing_method_by_name() throws IOException, CoreException {
+	fails_to_find_missing_method_by_name() throws IOException {
 		RunScript runScript = new RunScript(getWindow());
 		runScript.withContents(
 				"var person = Find.typeByName('Person');\n" +

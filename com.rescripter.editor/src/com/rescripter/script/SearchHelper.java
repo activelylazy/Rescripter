@@ -16,10 +16,12 @@ import org.eclipse.jdt.core.search.SearchRequestor;
 
 public class SearchHelper {
 
-    public IType findTypeByName(String name) throws CoreException {
+    private static final String NO_PATTERN = "No pattern!?";
+
+	public IType findTypeByName(String name) throws CoreException {
         SearchPattern pattern = SearchPattern.createPattern(name, IJavaSearchConstants.TYPE, IJavaSearchConstants.DECLARATIONS, SearchPattern.R_EXACT_MATCH);
         if (pattern == null) {
-            throw new NullPointerException("No pattern!?");
+            throw new NullPointerException(NO_PATTERN);
         }
         
         final List<SearchMatch> matches = new ArrayList<SearchMatch>();
@@ -48,7 +50,7 @@ public class SearchHelper {
         SearchPattern pattern = SearchPattern.createPattern(type, IJavaSearchConstants.SUPERTYPE_TYPE_REFERENCE);
         if (pattern == null) {
             // E.g. element not found / no longer exists
-            throw new NullPointerException("No pattern!?");
+            throw new NullPointerException(NO_PATTERN);
         }
         
         SearchRequestor requestor = new SearchRequestor() {
@@ -76,7 +78,7 @@ public class SearchHelper {
         SearchPattern pattern = SearchPattern.createPattern(element, IJavaSearchConstants.REFERENCES);
         if (pattern == null) {
             // E.g. element not found / no longer exists
-            throw new NullPointerException("No pattern!?");
+            throw new NullPointerException(NO_PATTERN);
         }
         
         SearchRequestor requestor = new SearchRequestor() {
@@ -107,7 +109,7 @@ public class SearchHelper {
                                                             SearchPattern.R_FULL_MATCH);
         if (pattern == null) {
             // E.g. element not found / no longer exists
-            throw new NullPointerException("No pattern!?");
+            throw new NullPointerException(NO_PATTERN);
         }
         
         SearchRequestor requestor = new SearchRequestor() {

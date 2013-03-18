@@ -1,6 +1,7 @@
 package com.rescripter.views;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -24,7 +25,7 @@ public class TestResultView extends ViewPart {
 	private Composite panel;
 	private TestProgressBar progress;
 	
-	private java.util.List<TestResult> testResultList;
+	private List<TestResult> testResultList;
 	private TreeViewer treeViewer;
 	
 	@Override
